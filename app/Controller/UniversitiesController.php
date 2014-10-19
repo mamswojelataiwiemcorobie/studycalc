@@ -861,8 +861,12 @@ class UniversitiesController extends AppController {
 
 		$miasto = $this-> University-> City-> find ('first', array('condition' => array('nazwa' => $name)));
 
+		$this->University->Country->contain('BasketinCountry');
 		$kraj = $this-> University-> Country-> find ('first', array('fields' => array('name'), 
 																		'conditions' => array('id' => $miasto['City']['country_id'])));
+		Debugger::dump($kraj);
+
+
 		$result['conditions']['country'] = $kraj['Country']['name'];
 		$result['conditions']['city'] = $name;
 
@@ -874,13 +878,20 @@ class UniversitiesController extends AppController {
 		$result['dinner'] = $miasto['City']['obiad']*120; //+koszty obiadu
 		$result['transport'] = $miasto['City']['bilet_m'] * 12;
 		$result['accomodation'] = $miasto['City']['pokoj'] *12;
+		//koszty rozrywki (np. wyjście do kina), default 2x w tygodniu
+		$result['entertainment'] = 0;
+		foreach ($kraj['BasketinCountry'] as $entertainment) {
+			if ($entertainment['basket_id'] == 2) { //id wyjścia do kina
+				$result['entertainment'] = $result['entertainment'] + $entertainment['price'];
+			}
+		}
+		$result['entertainment']= $result['entertainment']*52; //1x w tygodniu
 		//koszty uczelni
 		//koszty zakupów
 		//koszty życia:
-		//			rozrywki
 		//			sport
 
-		$result['sum'] = $result['dinner'] + $result['transport'] + $result['accomodation'];
+		$result['sum'] = $result['dinner'] + $result['transport'] + $result['accomodation'] + $result['entertainment'];
 		$this-> set ('result', $result);
 
 		// uczelnie w mieście

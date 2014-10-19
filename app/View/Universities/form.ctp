@@ -107,6 +107,33 @@
 
 	<form action="/universities/form_result" id="msform" method="get">
 	 	<!-- fieldsets -->
+	 	<fieldset>
+			<h2 class="fs-title">Fild of study</h2>
+			<h3 class="fs-subtitle">Which is the most interesting for you?</h3>
+			<?php echo $this->Form->input('course_type_id', array(
+
+													'name' => 'course_type_id',
+
+													'class' => 'form-control',
+
+													'size' => 7, 
+
+													'type' => 'select' ,
+
+													'security' => false));
+			echo $this->Form->input('course', array('name' => 'course_id',
+
+											'class' => 'form-control',
+
+											'size' => 7, 
+
+											'type' => 'select' ,
+
+											'security' => false));?>
+			<div class="clearfix"></div>
+			<input type="button" name="previous" class="previous action-button" value="Previous" />
+			<input id="" type="button" name="next" class="next action-button" value="Next" />
+		</fieldset>
 		<fieldset>
 			<h2 class="fs-title">Are you interested in studing in some particular place?</h2>
 			<h3 class="fs-subtitle">Please select</h3>
@@ -141,39 +168,29 @@
 
 												'type' => 'select' ));?>
 			<div class="clearfix"></div>
-			<input id="nextCourse" type="button" name="next" class="next action-button" value="Next" />
+			<input id="nextLiving" type="button" name="next" class="next action-button" value="Next" />
 		</fieldset>
 		<fieldset>
-			<h2 class="fs-title">Fild of study</h2>
-			<h3 class="fs-subtitle">Which is the most interesting for you?</h3>
-			<?php echo $this->Form->input('course_type_id', array(
-
-													'name' => 'course_type_id',
-
-													'class' => 'form-control',
-
-													'size' => 7, 
-
-													'type' => 'select' ,
-
-													'security' => false));
-			echo $this->Form->input('course', array('name' => 'course_id',
-
-											'class' => 'form-control',
-
-											'size' => 7, 
-
-											'type' => 'select' ,
-
-											'security' => false));?>
-			<div class="clearfix"></div>
-			<input type="button" name="previous" class="previous action-button" value="Previous" />
-			<input id="nextScholarship" type="button" name="next" class="next action-button" value="Next" />
-		</fieldset>
-		<fieldset>
-			<h2 class="fs-title">Scholarschips</h2>
-			<h3 class="fs-subtitle">Do you think you could get any of those?</h3>
-			<div id="UniversityStypendium"></div>
+			<h2 class="fs-title">Living</h2>
+			<h3 class="fs-subtitle">Tell us about your live style</h3>
+			<div id="Dining">
+				<p>Usually you:</p>
+				<input name="dining" value="out" type="radio" /><label>eat outside/order sth</label>
+				<input name="dining" value="self" type="radio" /><label>prepare sth to eat by yourself</label>
+				<input name="dining" value="both" type="radio" /><label>50/50</label>
+			</div>
+			<div id="Enterteinment">
+				<p>You like going out:</p>
+				<input name="Enterteinment" value="hardly" type="radio" /><label>No, I'm not going out very often</label>
+				<input name="Enterteinment" value="1x" type="radio" /><label>once a week</label>
+				<input name="Enterteinment" value="2x" type="radio" /><label>two times a week</label>
+			</div>
+			<div id="Sport">
+				<p>What sports do you practice</p>
+				<input name="Sport" value="jogging" type="radio" /><label>jogging</label>
+				<input name="Sport" value="gym" type="radio" /><label>gym</label>
+				<input name="Sport" value="no" type="radio" /><label>neither</label>
+			</div>
 			<div class="clearfix"></div>
 			<input type="button" name="previous" class="previous action-button" value="Previous" />
 			<input type="button" name="next" class="next action-button" value="Next" />

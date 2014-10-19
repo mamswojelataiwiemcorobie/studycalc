@@ -15,6 +15,8 @@
 						<?php if (isset($result['course_price'])) :?><li>Course Price <?php echo $result['course_price'];?></li><?php endif;?>
 						<li>Transport <?php echo $result['transport'];?></li>
 						<li>Accomodation <?php echo $result['accomodation'];?></li>
+						<li>Entertainment(if you go out once a week) <?php echo $result['entertainment'];?></li>
+						<li>Basic things to live for a week</li>
 					</ul>
 					<div class="clearfix"></div>
 					<hr>
