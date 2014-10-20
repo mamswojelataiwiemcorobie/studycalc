@@ -27,7 +27,69 @@
 			</article>
 
 			<!-- Podobne miejsca -->
+			<div id="uni_near" clss="caruosel">
+				<h3>Universities near <?php echo $result['conditions']['city']; ?></h3>
+				<section class=" recent-projects-home topspace30 animated fadeInUpNow notransition">
 
+					<div class="text-center smalltitle"></div>	
+
+					<div class="col-md-12">
+
+						<div id="carousel" class="list_carousel text-center">
+
+							<div class="carousel_nav">
+
+								<a class="prev" id="car_prev" href="#"><span>prev</span></a>
+								<a class="next" id="car_next" href="#"><span>next</span></a>
+
+							</div>
+
+							<div class="clearfix"></div>
+
+							<ul id="carousel-projects">
+							<?php 
+								$i = 0;
+
+								foreach ($uczelnie as $university) :
+
+										$slug = Inflector::slug($university['University']['nazwa'],'-');
+
+										$foto = $university['University']['photo'];
+
+										$foto = substr($foto, 0, -4).".png";
+
+										$i = $i+1;
+								?>
+
+								<li class="li_">
+									<div class="boxcontainer" style="height:270px">
+
+										<?php echo $this->Html->image('uczelnie_min/'.$foto, array('fullBase' => true)); ?>
+
+										<div class="roll">
+
+											<div class="wrapcaption">
+
+												<a href="/universities/university_result/<?php echo $university['University']['nazwa']; ?>"></a>
+
+												<i class="icon-link captionicons"></i></a>
+
+											</div>
+
+										</div>
+
+										<h1></h1>
+
+										<a href="/universities/university_result/<?php echo $university['University']['nazwa']; ?>"><?php echo $university['University']['nazwa']; ?></a>
+
+									</div>
+								</li>
+								<?php endforeach; ?>
+							</ul>
+						</div>
+					</div>
+				</section>				
+			</div>
 	</div>
 	<div class="4u">
 	

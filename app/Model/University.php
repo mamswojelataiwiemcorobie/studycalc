@@ -4,7 +4,7 @@ class University extends AppModel {
 		'Containable',
 	);
 	public $belongsTo = array('City', 'UniversityType', 'Country', 'StypendiumType');
-	public $hasOne = array('UniversitiesParameter','Promo' );
+	public $hasOne = array('UniversitiesParameter');
 	public $hasMany = array( 'CourseonUniversity', 'Exchange');
 	public $displayField = 'nazwa';
 		

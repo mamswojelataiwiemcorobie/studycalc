@@ -100,7 +100,7 @@
 	<ol id="progressbar" class="progtrckr" data-progtrckr-steps="5">
 	    <li class="active">Location</li>
 	    <li class="">Courses</li>
-	    <li class="">Scholarships</li>
+	    <li class="">Living</li>
 	    <li class="">Accommodation</li>
 	    <li class="">Transport</li>
 	</ol> 
@@ -110,7 +110,8 @@
 	 	<fieldset>
 			<h2 class="fs-title">Fild of study</h2>
 			<h3 class="fs-subtitle">Which is the most interesting for you?</h3>
-			<?php echo $this->Form->input('course_type_id', array(
+			<?php echo $this->Form->input('Course_type_id', array(
+													'options' => $ctype,
 
 													'name' => 'course_type_id',
 
@@ -121,7 +122,7 @@
 													'type' => 'select' ,
 
 													'security' => false));
-			echo $this->Form->input('course', array('name' => 'course_id',
+			echo $this->Form->input('Course', array('name' => 'course_id',
 
 											'class' => 'form-control',
 
@@ -131,7 +132,6 @@
 
 											'security' => false));?>
 			<div class="clearfix"></div>
-			<input type="button" name="previous" class="previous action-button" value="Previous" />
 			<input id="" type="button" name="next" class="next action-button" value="Next" />
 		</fieldset>
 		<fieldset>
@@ -168,6 +168,7 @@
 
 												'type' => 'select' ));?>
 			<div class="clearfix"></div>
+			<input type="button" name="previous" class="previous action-button" value="Previous" />
 			<input id="nextLiving" type="button" name="next" class="next action-button" value="Next" />
 		</fieldset>
 		<fieldset>
@@ -186,7 +187,7 @@
 				<input name="Enterteinment" value="2x" type="radio" /><label>two times a week</label>
 			</div>
 			<div id="Sport">
-				<p>What sports do you practice</p>
+				<p>What sports do you practice?</p>
 				<input name="Sport" value="jogging" type="radio" /><label>jogging</label>
 				<input name="Sport" value="gym" type="radio" /><label>gym</label>
 				<input name="Sport" value="no" type="radio" /><label>neither</label>
@@ -198,7 +199,11 @@
 		<fieldset>
 			<h2 class="fs-title">Place to stay</h2>
 			<h3 class="fs-subtitle">Were do you want to live?</h3>
-			<div id="Accommodation"></div>
+			<div id="Accommodation">
+				<input name="Accommodation" value="dormitory" type="radio" /><label>in dormitory if possible</label>
+				<input name="Accommodation" value="shareroom" type="radio" /><label>rent the room with other students</label>
+				<input name="Accommodation" value="ownroom" type="radio" /><label>rent my own room</label>
+			</div>
 			<div class="clearfix"></div>
 			<input type="button" name="previous" class="previous action-button" value="Previous" />
 			<input id="nextTransport" type="button" name="next" class="next action-button" value="Next" />
@@ -358,7 +363,7 @@ $this->Js->get('#UniversityMiasto')->event('click',
 
 	);
 
-$this->Js->get('#nextCourse')->event('click', 
+/*$this->Js->get('#nextCourse')->event('click', 
 
 	$this->Js->request(array(
 
@@ -386,9 +391,9 @@ $this->Js->get('#nextCourse')->event('click',
 
 		))
 
-	);
+	);*/
 	
-$this->Js->get('#UniversityCourseTypeId')->event('click', 
+$this->Js->get('#Course_type_id')->event('click', 
 
 	$this->Js->request(array(
 
@@ -398,7 +403,7 @@ $this->Js->get('#UniversityCourseTypeId')->event('click',
 
 		), array(
 
-			'update'=>'#UniversityCourse',
+			'update'=>'#Course',
 
 			'async' => true,
 
@@ -411,36 +416,6 @@ $this->Js->get('#UniversityCourseTypeId')->event('click',
 				'isForm' => false,
 
 				'inline' => true
-
-				))
-
-		))
-
-	);
-
-	$this->Js->get('#nextScholarship')->event('click', 
-
-		$this->Js->request(array(
-
-			'controller'=>'Universities',
-
-			'action'=>'getStypendium',
-
-			), array(
-
-				'update'=>'#UniversityStypendium',
-
-				'async' => true,
-
-				'method' => 'post',
-
-				'dataExpression'=>true,
-
-				'data'=> $this->Js->serializeForm(array(
-
-					'isForm' => false,
-
-					'inline' => true
 
 				))
 

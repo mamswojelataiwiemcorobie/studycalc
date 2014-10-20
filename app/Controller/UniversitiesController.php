@@ -675,14 +675,18 @@ class UniversitiesController extends AppController {
 				'group' => array('CourseonUniversity.course_id'),
 				'contain' => array('Course')
 				));
-		} else {
-			$kursy = $this->University->CourseonUniversity->find('list', array(
-				'fields' => array('CourseonUniversity.course_id', 'Course.nazwa'),
-				'group' => array('CourseonUniversity.course_id'),
-				'contain' => array('Course')
+		} else if (!empty($this->request->data['course_type_id'])) {
+			$kursy = $this->University->CourseonUniversity->Course->find('list', array(
+				'fields' => array('Course.id', 'Course.nazwa'),
+				'conditions' => array('Course.courses_type_id' => $this->request->data['course_type_id']),
 				));
-		}	
- 
+		} else {
+			$kursy = $this->University->CourseonUniversity->Course->find('list', array(
+				'fields' => array('Course.id', 'Course.nazwa')
+				));
+		}
+ 		
+ 		Debugger::log($kursy);
 		$this->set('kursy',$kursy);
 		$this->layout = false;
 	}
@@ -737,24 +741,10 @@ class UniversitiesController extends AppController {
 
 		if($this->request->query) {
 
-			if (isset($this->request->query['country_id'])) {
-				$country_id = $this->request->query['country_id'];
+			$country_id = $this->request->query['country_id'];
 				$kraj = $this-> University-> Country-> find ('first', array('fields' => array('name'), 
 																				'conditions' => array('id' => $country_id)));
 				$result['conditions']['country'] = $kraj['Country']['name'];
-			} elseif (isset($this->request->query['city_id'])) {
-
-				$city_id = $this->request->query['city_id'];
-
-				$miasto = $this-> University-> City-> find ('first', array('condition' => array('id' => $city_id)));
-
-				$kraj = $this-> University-> Country-> find ('first', array('fields' => array('name'), 
-																				'conditions' => array('id' => $miasto['City']['country_id'])));
-				$result['conditions']['country'] = $kraj['Country']['name'];
-
-			} elseif (isset($this->request->query['university_id'])) {
-
-			}
 
 			if (!isset($this->request->query['city_id'])) {
 				/*jeżeli nie wybrano miasta to oblicz średnią ze wszystkich w kraju*/
@@ -895,6 +885,9 @@ class UniversitiesController extends AppController {
 		$this-> set ('result', $result);
 
 		// uczelnie w mieście
+		$this->University->contain('UniversitiesParameter');
+		$uczelnie = $this->University->find('all', array('conditions' => $miasto['City']['id']));
+		$this-> set ('uczelnie', $uczelnie);
 	}
 
 	public function srednia() {
