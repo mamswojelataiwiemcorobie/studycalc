@@ -105,7 +105,7 @@
 	    <li class="">Transport</li>
 	</ol> 
 
-	<form action="/universities/form_result" id="msform" method="get">
+	<form action="/universities/form_result" id="msform" method="get" class="form-horizontal" role="form">
 	 	<!-- fieldsets -->
 	 	<fieldset>
 			<h2 class="fs-title">Fild of study</h2>
@@ -176,13 +176,33 @@
 			<h3 class="fs-subtitle">Tell us about your live style</h3>
 			<div id="Dining">
 				<p>Usually you:</p>
-				<input name="dining" value="out" type="radio" /><label>eat outside/order sth</label>
-				<input name="dining" value="self" type="radio" /><label>prepare sth to eat by yourself</label>
-				<input name="dining" value="both" type="radio" /><label>50/50</label>
+				<div class="radio">
+					<label>
+						<input name="dining" value="out" type="radio" />
+						eat outside/order sth
+					</label>
+				</div>
+				<div class="radio">
+					<label>
+						<input name="dining" value="self" type="radio" />
+						prepare sth to eat by yourself
+					</label>
+				</div>
+				<div class="radio">
+					<label>
+						<input name="dining" value="both" type="radio" />
+						50/50
+					</label>
+				</div>
 			</div>
 			<div id="Enterteinment">
 				<p>You like going out:</p>
-				<input name="Enterteinment" value="hardly" type="radio" /><label>No, I'm not going out very often</label>
+				<div class="radio">
+					<label>
+						<input name="Enterteinment" value="hardly" type="radio" />
+						No, I'm not going out very often
+					</label>
+				</div>
 				<input name="Enterteinment" value="1x" type="radio" /><label>once a week</label>
 				<input name="Enterteinment" value="2x" type="radio" /><label>two times a week</label>
 			</div>

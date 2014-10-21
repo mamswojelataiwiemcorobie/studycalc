@@ -3,6 +3,7 @@ class City extends AppModel {
 	public $hasMany = 'University';
 	public $belongsTo = array('Country');
 	public $displayField = 'nazwa';
+	public $actsAs = array('Containable');
 	
 	public function srednia($city) {
 		/*wartosci wspólczynników wagi:

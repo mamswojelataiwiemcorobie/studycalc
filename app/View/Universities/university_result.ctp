@@ -28,7 +28,7 @@
 
 			<!-- Podobne miejsca -->
 			<div id="uni_near" clss="caruosel">
-				<h3>Universities near <?php echo $result['conditions']['city']; ?></h3>
+				<h3>Universities near <?php echo $result['conditions']['university']; ?></h3>
 				<section class=" recent-projects-home topspace30 animated fadeInUpNow notransition">
 
 					<div class="text-center smalltitle"></div>	
@@ -70,7 +70,7 @@
 
 											<div class="wrapcaption">
 
-												<a href="/universities/university_result/<?php echo $slug; ?>"></a>
+												<a href="/universities/university_result/<?php echo $university['University']['nazwa']; ?>"></a>
 
 												<i class="icon-link captionicons"></i></a>
 
@@ -80,7 +80,7 @@
 
 										<h1></h1>
 										
-										<a href="/universities/university_result/<?php echo $university['University']['id'].'/'. $slug; ?>"><?php echo $university['University']['nazwa']; ?></a>
+										<a href="/universities/university_result/<?php echo $university['University']['nazwa']; ?>"><?php echo $university['University']['nazwa']; ?></a>
 
 									</div>
 								</li>
