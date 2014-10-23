@@ -10,10 +10,16 @@
 				</header>
 				<div class ="recipe">
 					<ul>
+						<h3>Per year</h3>
 						<li>Dinner(if you eat outside 2x per week) <?php echo $result['dinner'];?> </li>
 						<?php if (isset($result['course_price'])) :?><li>Course Price <?php echo $result['course_price'];?></li><?php endif;?>
 						<li>Transport(per year) <?php echo $result['transport'];?></li>
 						<li>Accomodation <?php echo $result['accomodation'];?></li>
+						<li>Entertainment(<?php if(isset($result['conditions']['Enterteinment'])) : 
+													if ($result['conditions']['Enterteinment'] == 'hardly'):?>if you hardly ever go out 
+												<?php elseif ($result['conditions']['Enterteinment'] == '2x'):?> if you go out twice a week <?php endif;?>
+											<?php else :?> if you go out once a week<?php endif;?>) <?php echo $result['entertainment'];?>
+						</li>
 					</ul>
 					<div class="clearfix"></div>
 					<hr>

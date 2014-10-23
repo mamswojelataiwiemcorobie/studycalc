@@ -753,28 +753,82 @@ class UniversitiesController extends AppController {
 					$result['entertainment'] = $result['entertainment'] + $entertainment['price'];
 				}
 			}
-			$result['entertainment']= $result['entertainment']*52; //1x w tygodniu
+			if (isset($this->request->query['Enterteinment'])) {
+				$entertain = $this->request->query['Enterteinment'];
+				$result['conditions']['Enterteinment'] = $entertain;
+				switch ($entertain) {
+					case 'hardly':
+						$result['entertainment'] = $result['entertainment']; //tylko raz
+						break;
+					case '1x': 
+						$result['entertainment'] = round($result['entertainment']*52); break;
+					case '2x':
+						$result['entertainment'] = round($result['entertainment']*104); break;
+				}
+			} else {
+				$result['entertainment']= round($result['entertainment']*52); //1x w tygodniu
+			}
+
+			//zakupy
 
 			if (!isset($this->request->query['city_id'])) {
 				/*jeżeli nie wybrano miasta to oblicz średnią ze wszystkich w kraju*/
 				$miasta = $this-> University-> City-> find ('all', array('condition' => array('country_id' => $country_id)));
-				$obiady = 0;
+
+				$obiady = $pokoj = $bilety = $bilety_m = 0;
+				$miasta_a = $miasta_b = $miasta_bm = $miasta_d =0 ; 
 				foreach ($miasta as $miasto) {
 					if (!empty($miasto['City']['obiad'])) {
 						$obiady = $obiady + $miasto['City']['obiad'];
+						++$miasta_d; 
+					}
+					if (!empty($miasto['City']['pokoj'])) {
+						$pokoj = $pokoj + $miasto['City']['pokoj'];
+						++$miasta_a; 
+					}
+					if (!empty($miasto['City']['bilet_m'])) {
+						$bilety_m = $bilety_m + $miasto['City']['bilet_m'];
+						++$miasta_bm; 
+					}
+					if (!empty($miasto['City']['bilet'])) {
+						$bilety = $bilety + $miasto['City']['bilet'];
+						++$miasta_b; 
 					}
 				}
-				$result['dinner'] = $obiady/count($miasta);
-				/*dodawanie kosztów życia w mieście 
-				+ przeciętne zakupy w państwie 
-				+ koszt studió
-				+ mieszkania */
+				$result['dinner'] = round(($obiady/$miasta_d) * 104); //2x w tygodniu poza domem 
+				$result['accomodation'] = round(($pokoj/$miasta_a) *12);
+
+				if (isset($this->request->query['transport'])) {
+					$transport = $this->request->query['transport'];
+					switch ($transport) {
+						case 'public':
+							$result['transport'] = round(($bilety_m/$miasta_bm) * 12);
+							$result['conditions']['transport'] = 'Public transport';
+							break;
+						case 'bike':
+							$result['transport'] = 0;
+							$result['conditions']['transport'] = 'Bike';
+							break;
+						case 'foot':
+							$result['transport'] = round(($bilety/$miasta_b) * 100); //zakładamy że czasem zdarzy nam się pojechać autobusem
+							$result['conditions']['transport'] = 'Foot';
+							break;
+						case 'car':
+							$result['transport'] = 50*12; //ceny benzyny
+							$result['conditions']['transport'] = 'Car';
+							break;
+					}
+				} else {
+					$result['transport'] = round(($bilety_m/$miasta_bm) * 12);
+				}
+				/*dodawanie kosztów życia w mieście  
+				+ koszt studió*/
 			} else {
 				$city_id = $this->request->query['city_id'];
 
 				$miasto = $this-> University-> City-> find ('first', array('condition' => array('id' => $city_id)));
 				$result['conditions']['city'] = $miasto['City']['nazwa'];
-				$result['dinner'] = $miasto['City']['obiad'];
+				$result['dinner'] = round($miasto['City']['obiad']* 104); //2x w tygodniu poza domem 
 
 				if (isset($this->request->query['transport'])) {
 					$transport = $this->request->query['transport'];
@@ -787,8 +841,13 @@ class UniversitiesController extends AppController {
 							$result['transport'] = 0;
 							$result['conditions']['transport'] = 'Bike';
 							break;
-						default:
-							# code...
+						case 'foot':
+							$result['transport'] = $miasto['City']['bilet'] * 100; //zakładamy że czasem zdarzy nam się pojechać autobusem
+							$result['conditions']['transport'] = 'Foot';
+							break;
+						case 'car':
+							$result['transport'] = 50*12; //ceny benzyny
+							$result['conditions']['transport'] = 'Car';
 							break;
 					}
 				} else {
@@ -816,7 +875,7 @@ class UniversitiesController extends AppController {
 								break;
 						}
 					} else {
-						$result['accomodation'] = $miasto['City']['pokoj'];
+						$result['accomodation'] = $miasto['City']['pokoj'] *12;
 					}
 
 					if (isset($this->request->query['course_type_id'])) {
@@ -837,22 +896,21 @@ class UniversitiesController extends AppController {
 				} else {
 					if (isset($this->request->query['accomodation'])) {
 						$accomodation = $this->request->query['accomodation'];
-						switch ($accomodation) {
-							case 'dormitory':
-								
-								break;
-							
-							default:
-								# code...
-								break;
+						if ($accomodation == 'dormitory' || $accomodation == 'shareroom') {
+							$result['accomodation'] = $miasto['City']['pokoj_miejsce'];
+						} else {
+							$result['accomodation'] = $miasto['City']['pokoj'];
 						}
 					} else {
-						$result['accomodation'] = $miasto['City']['pokoj'];
+						$result['accomodation'] = $miasto['City']['pokoj'] * 12;
 					}
 				}
 
 			}
-			$result['sum'] = $result['dinner'] + $result['course_price'] + $result['transport'] + $result['accomodation'] + $result['entertainment'];
+			$result['sum'] = $result['dinner'] + $result['transport'] + $result['accomodation'] + $result['entertainment'];
+			if (isset($result['course_price'])) {
+				$result['sum'] = $result['sum'] + $result['course_price'];
+			}
 			$this-> set ('result', $result);
 		} 
 	}
