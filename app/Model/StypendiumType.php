@@ -1,5 +1,5 @@
 <?php
 class StypendiumType extends AppModel {
-	public $hasMany = 'University';
+	public $hasMany = 'Scholarship';
 	public $displayField = 'name';
 }

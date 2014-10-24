@@ -3,10 +3,12 @@ class University extends AppModel {
 	public $actsAs = array(
 		'Containable',
 	);
-	public $belongsTo = array('City', 'UniversityType', 'Country', 'StypendiumType');
+	public $belongsTo = array('City', 'UniversityType', 'Country');
 	public $hasOne = array('UniversitiesParameter');
-	public $hasMany = array( 'CourseonUniversity', 'Exchange');
+	public $hasMany = array( 'CourseonUniversity', 'Exchange', 'Scholarship');
 	public $displayField = 'nazwa';
+
+	
 		
 	public function resize_image($file, $w, $h, $crop=FALSE) {
 		list($width, $height) = getimagesize($file['tmp_name']);

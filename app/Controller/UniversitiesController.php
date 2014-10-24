@@ -746,6 +746,12 @@ class UniversitiesController extends AppController {
 			$kraj = $this-> University-> Country-> find ('first', array('conditions' => array('id' => $country_id)));
 			$result['conditions']['country'] = $kraj['Country']['name'];
 
+			// uczelnie w mieście
+			$this->University->contain('UniversitiesParameter');
+			$uczelnie = $this->University->find('all', array('conditions' => array('country_id' => $country_id,
+																					'rank <=' => 6)));
+			$this-> set ('uczelnie', $uczelnie);
+
 			//rozrywka
 			$result['entertainment'] = 0;
 			foreach ($kraj['BasketinCountry'] as $entertainment) {
@@ -858,7 +864,10 @@ class UniversitiesController extends AppController {
 
 					$university_id = $this->request->query['university_id'];
 
-					//$result['conditions']['university'] = $kraj['Country']['name'];
+					$this->University->contain();
+					$uczelnia = $this->University->find('first', array('conditions' => array('id' => $university_id)));
+
+					$result['conditions']['university'] = $uczelnia['University']['nazwa'];
 
 					if (isset($this->request->query['accomodation'])) {
 						$accomodation = $this->request->query['accomodation'];
@@ -892,7 +901,15 @@ class UniversitiesController extends AppController {
 						}
 					}
 
+					// uczelnie w mieście
+					$this->University->contain('UniversitiesParameter');
+					$uczelnie = $this->University->find('all', array('conditions' => array('city_id' => $city_id)));
+					$this-> set ('uczelnie', $uczelnie);
+
 					//stypendia do filtrów
+					//$scholarships = $this->University->Scholarship->find('all', array('conditions' => array('university_id' => $university_id)));
+					//Debugger::dump($scholarships);
+
 				} else {
 					if (isset($this->request->query['accomodation'])) {
 						$accomodation = $this->request->query['accomodation'];
