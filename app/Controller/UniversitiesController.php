@@ -744,7 +744,13 @@ class UniversitiesController extends AppController {
 			$country_id = $this->request->query['country_id'];
 			$this->University->Country->contain('BasketinCountry');
 			$kraj = $this-> University-> Country-> find ('first', array('conditions' => array('id' => $country_id)));
-			$result['conditions']['country'] = $kraj['Country']['name'];
+			$result['conditions']['country'] = $kraj['Country'];
+
+			//kilka mista do filtra
+			$this->University->City-> contain();
+			$cities = $this-> University-> City-> find ('all', array('condition' => array('country_id' => $country_id),
+																		'order' => array('City.srednia DESC'),
+																		'limit' => 5));
 
 			// uczelnie w mieście
 			$this->University->contain('UniversitiesParameter');
@@ -833,6 +839,13 @@ class UniversitiesController extends AppController {
 				$city_id = $this->request->query['city_id'];
 
 				$miasto = $this-> University-> City-> find ('first', array('condition' => array('id' => $city_id)));
+
+				foreach ($cities as $key => $city) {
+					if ($city['City']['id'] == $city_id) {
+						$cities[$key]['City']['selected'] = 1;
+					}
+				}
+
 				$result['conditions']['city'] = $miasto['City']['nazwa'];
 				$result['dinner'] = round($miasto['City']['obiad']* 104); //2x w tygodniu poza domem 
 
@@ -907,16 +920,29 @@ class UniversitiesController extends AppController {
 					$this-> set ('uczelnie', $uczelnie);
 
 					//stypendia do filtrów
-					//$scholarships = $this->University->Scholarship->find('all', array('conditions' => array('university_id' => $university_id)));
-					//Debugger::dump($scholarships);
+					$this->University->Scholarship->contain('StypendiumType');
+					$scholarships = $this->University->Scholarship->find('all', array('conditions' => array('university_id' => $university_id)));
+					if (isset($this->request->query['scholarship_id'])) {
+						$scholarship_id = $this->request->query['scholarship_id'];
+						$scholarship = $this->University->Scholarship->find('first', array('conditions' => array('scholarship_id' => $scholarship_id)));
+						$result['scholarship'] = $scholarship['Scholarship']['value']*12;
+						foreach ($scholarships as $key => $s) {
+							if ($s['Scholarship']['id'] == $scholarship_id) {
+								$scholarships[$key]['Scholarship']['selected'] = 1;
+							}
+						}
+					}
+					$this-> set ('scholarships', $scholarships);
+					Debugger::dump($scholarships);
+
 
 				} else {
 					if (isset($this->request->query['accomodation'])) {
 						$accomodation = $this->request->query['accomodation'];
 						if ($accomodation == 'dormitory' || $accomodation == 'shareroom') {
-							$result['accomodation'] = $miasto['City']['pokoj_miejsce'];
+							$result['accomodation'] = $miasto['City']['pokoj_miejsce']*12;
 						} else {
-							$result['accomodation'] = $miasto['City']['pokoj'];
+							$result['accomodation'] = $miasto['City']['pokoj']*12;
 						}
 					} else {
 						$result['accomodation'] = $miasto['City']['pokoj'] * 12;
@@ -928,7 +954,11 @@ class UniversitiesController extends AppController {
 			if (isset($result['course_price'])) {
 				$result['sum'] = $result['sum'] + $result['course_price'];
 			}
+			if (isset($result['scholarship'])) {
+				$result['sum'] = $result['sum'] - $result['scholarship'];
+			}
 			$this-> set ('result', $result);
+			$this-> set ('cities', $cities);
 		} 
 	}
 

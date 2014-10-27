@@ -5,21 +5,23 @@
 				<header>
 					<h2>Summary</h2>
 					<p>
-						If you choose to study in <?php if (isset($result['conditions']['city'])) echo $result['conditions']['city']; ?><?php if (isset($result['conditions']['country'])) echo ', '. $result['conditions']['country']; ?> - <?php if (isset($result['conditions']['course'])) echo $result['conditions']['course']; ?><?php if (isset($result['conditions']['university'])) echo ' on '. $result['conditions']['university']; ?> you will pay:
+						If you choose to study in <?php if (isset($result['conditions']['city'])) echo $result['conditions']['city']; ?><?php if (isset($result['conditions']['country']['name'])) echo ', '. $result['conditions']['country']['name']; ?> - <?php if (isset($result['conditions']['course'])) echo $result['conditions']['course']; ?><?php if (isset($result['conditions']['university'])) echo ' on '. $result['conditions']['university']; ?> you will pay:
 					</p>
 				</header>
 				<div class ="recipe">
 					<ul>
 						<h3>Per year</h3>
-						<li>Dinner(if you eat outside 2x per week) <?php echo $result['dinner'];?> </li>
-						<?php if (isset($result['course_price'])) :?><li>Course Price <?php echo $result['course_price'];?></li><?php endif;?>
-						<li>Transport(per year) <?php echo $result['transport'];?></li>
-						<li>Accomodation <?php echo $result['accomodation'];?></li>
+						<li>
+							Dinner(if you eat outside 2x per week) <span><?php echo $result['dinner'];?></span></li>
+						<?php if (isset($result['course_price'])) :?><li>Course Price <span><?php echo $result['course_price'];?></span></li><?php endif;?>
+						<li>Transport(per year) <span><?php echo $result['transport'];?></span></li>
+						<li>Accomodation <span><?php echo $result['accomodation'];?></span></li>
 						<li>Entertainment(<?php if(isset($result['conditions']['Enterteinment'])) : 
 													if ($result['conditions']['Enterteinment'] == 'hardly'):?>if you hardly ever go out 
 												<?php elseif ($result['conditions']['Enterteinment'] == '2x'):?> if you go out twice a week <?php endif;?>
-											<?php else :?> if you go out once a week<?php endif;?>) <?php echo $result['entertainment'];?>
+											<?php else :?> if you go out once a week<?php endif;?>) <span><?php echo $result['entertainment'];?></span>
 						</li>
+						<?php if (isset($result['scholarship'])) :?><li>Scholarship <span><?php echo $result['scholarship'];?></span></li><?php endif;?>
 					</ul>
 					<div class="clearfix"></div>
 					<hr>
@@ -74,7 +76,7 @@
 
 											<div class="wrapcaption">
 
-												<a href="/universities/university_result/<?php echo $university['University']['nazwa']; ?>"></a>
+												<a href="/universities/university_result/<?php echo $university['University']['id'].'/'. $slug; ?>"></a>
 
 												<i class="icon-link captionicons"></i></a>
 
@@ -84,7 +86,7 @@
 
 										<h1></h1>
 										
-										<a href="/universities/university_result/<?php echo $university['University']['nazwa']; ?>"><?php echo $university['University']['nazwa']; ?></a>
+										<a href="/universities/university_result/<?php echo $university['University']['id'].'/'. $slug; ?>"><?php echo $university['University']['nazwa']; ?></a>
 
 									</div>
 								</li>
@@ -99,17 +101,54 @@
 	<div class="4u">
 	
 		<!-- Sidebar -->
-			<section id="filtry" class="box">
+			<section id="filtry" class="box filters">
 				<a href="#" class="image featured filter_img"><img src="/img/mono_filter.png" alt=""/></a>
-				<header>
+				<!-- <header>
 					<h3>Filter</h3>
-				</header>
-				<ul>
-					<?php foreach ($result['conditions'] as $condition):?>
-						<li><?php echo $condition; ?></li>
-					<?php endforeach; ?>
-				</ul>
-				<p></p>
+				</header> -->
+				<form>
+				<?php $current_url = $_SERVER["REQUEST_URI"];?>
+					<fieldset>
+						<h3>Country</h3>
+						<ul>
+						<?php //foreach ($cities as $city):?>
+						 	<li>
+								<input type="checkbox" name="city_id" value="<?php //echo $city['City']['id']; ?>">
+								<label for="city_id"><a class="param-toggle <?php //if (isset($city['City']['selected'])) echo 'checked'; ?>" href="<?php //echo $current_url. '&city_id='. $city['City']['id']; ?>"><span><?php echo $result['conditions']['country']['name']; ?></span></a></label>
+							</li>
+						<?php //endforeach; ?>
+						</ul>
+					</fieldset>
+					<?php if (isset($cities)) : ?>
+					<fieldset>
+						<h3>City</h3>
+						<ul>
+							<?php foreach ($cities as $city):?>
+						 	<li>
+								<input type="checkbox" name="city_id" value="<?php echo $city['City']['id']; ?>">
+								<label for="city_id"><a class="param-toggle <?php if (isset($city['City']['selected'])) echo 'checked'; ?>" href="<?php echo $current_url. '&city_id='. $city['City']['id']; ?>"><span><?php echo $city['City']['nazwa']; ?></span></a></label>
+							</li>
+						<?php endforeach; ?>
+						</ul>
+					</fieldset>
+					<?php endif; ?>
+					<?php if (isset($scholarships)) : ?>
+					<fieldset>
+						<h3>Scholarship</h3>
+						<p>Do you think you have a chance for one?</p>
+						<ul>
+							<?php foreach ($scholarships as $scholarship):?>
+						 	<li>
+								<input type="checkbox" name="city_id" value="<?php echo $scholarship['Scholarship']['id']; ?>">
+								<label for="city_id"><a class="param-toggle <?php if (isset($scholarship['Scholarship']['selected'])) : echo 'checked'; ?>" href="<?php 
+								$pattern = '/&scholarship_id='. $scholarship['Scholarship']['id'] . '/';
+								echo preg_replace($pattern, ' ',$current_url); else :?>" href="<?php echo $current_url. '&scholarship_id='. $scholarship['Scholarship']['id']; endif; ?>"><span><?php echo $scholarship['Scholarship']['name']; ?></span></a></label>
+							</li>
+						<?php endforeach; ?>
+						</ul>
+					</fieldset>
+					<?php endif; ?>
+				</form>
 				<footer>
 					<a href="#" class="button alt">Filter</a>
 				</footer>
