@@ -1,6 +1,6 @@
-<div style="font-family: 'Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;";>
+<section>
 
-		<h2>UCZELNIE</h2>
+		<h2>UNIVERSITIES</h2>
 
 		<?php $universities = $this->requestAction(array(
 
@@ -32,8 +32,8 @@
 
 		</ul>
 
-          <p><a class="btn btn-default" href="/uczelnie">Zobacz ranking uniwersytetów &raquo;</a></p>
+          <p><a class="button alt" href="/uczelnie">Zobacz ranking uniwersytetów &raquo;</a></p>
 
 <!-- /.col-lg-4 -->
 
-</div>
+</section>

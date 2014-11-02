@@ -100,7 +100,7 @@
 	<ol id="progressbar" class="progtrckr" data-progtrckr-steps="5">
 	    <li class="active">Location</li>
 	    <li class="">Courses</li>
-	    <li class="">Living</li>
+	    <li class="">Live Style</li>
 	    <li class="">Accommodation</li>
 	    <li class="">Transport</li>
 	</ol> 
@@ -137,9 +137,7 @@
 		<fieldset>
 			<h2 class="fs-title">Are you interested in studing in some particular place?</h2>
 			<h3 class="fs-subtitle">Please select</h3>
-			<?php 
-			echo $this->Form->create();
-			echo $this->Form->input('country_id', array('options' => $kraje_v,
+			<?php echo $this->Form->input('country_id', array('options' => $kraje_v,
 
 													'name' => 'country_id',
 
@@ -150,67 +148,83 @@
 													'type' => 'select' ,
 
 													'security' => false));	
-			echo $this->Form->input('miasto', array('class' => 'form-control',
+				echo $this->Form->input('miasto', array('class' => 'form-control',
 
-												'name' => 'city_id',
+													'name' => 'city_id',
 
-												'size' => 7, 
+													'size' => 7, 
 
-												'type' => 'select' ,
+													'type' => 'select' ,
 
-												'security' => false));
+													'security' => false));
 
-			echo $this->Form->input('id', array('name' => 'university_id',
+				echo $this->Form->input('id', array('name' => 'university_id',
 
-												'class' => 'form-control',
+													'class' => 'form-control',
 
-												'size' => 7, 
+													'size' => 7, 
 
-												'type' => 'select' ));?>
+													'type' => 'select' ));?>
 			<div class="clearfix"></div>
 			<input type="button" name="previous" class="previous action-button" value="Previous" />
 			<input id="nextLiving" type="button" name="next" class="next action-button" value="Next" />
 		</fieldset>
 		<fieldset>
-			<h2 class="fs-title">Living</h2>
+			<h2 class="fs-title">Live Style</h2>
 			<h3 class="fs-subtitle">Tell us about your live style</h3>
-			<div id="Dining">
+			<div id="Dining" class="question col-md-4">
 				<p>Usually you:</p>
 				<div class="radio">
 					<label>
-						<input name="dining" value="out" type="radio" />
-						eat outside/order sth
+						<input name="dining" value="out" type="radio" />eat outside/order sth
 					</label>
 				</div>
 				<div class="radio">
 					<label>
-						<input name="dining" value="self" type="radio" />
-						prepare sth to eat by yourself
+						<input name="dining" value="self" type="radio" />prepare sth to eat by yourself
 					</label>
 				</div>
 				<div class="radio">
 					<label>
-						<input name="dining" value="both" type="radio" />
-						50/50
+						<input name="dining" value="both" type="radio" />50/50
 					</label>
 				</div>
 			</div>
-			<div id="Enterteinment">
-				<p>You like going out:</p>
+			<div id="Enterteinment" class="question col-md-4">
+				<p>Do you like going out:</p>
 				<div class="radio">
 					<label>
-						<input name="Enterteinment" value="hardly" type="radio" />
-						No, I'm not going out very often
+						<input name="Enterteinment" value="1x" type="radio" />once a week
 					</label>
 				</div>
-				<input name="Enterteinment" value="1x" type="radio" /><label>once a week</label>
-				<input name="Enterteinment" value="2x" type="radio" /><label>two times a week</label>
+				<div class="radio">
+					<label>
+						<input name="Enterteinment" value="2x" type="radio" />two times a week
+					</label>
+				</div>
+				<div class="radio">
+					<label>
+						<input name="Enterteinment" value="hardly" type="radio" />No, I'm not going out very often
+					</label>
+				</div>
 			</div>
-			<div id="Sport">
+			<div id="Sport" class="question col-md-4">
 				<p>What sports do you practice?</p>
-				<input name="Sport" value="jogging" type="radio" /><label>jogging</label>
-				<input name="Sport" value="gym" type="radio" /><label>gym</label>
-				<input name="Sport" value="no" type="radio" /><label>neither</label>
+				<div class="radio">
+					<label>
+						<input name="Sport" value="jogging" type="radio" />jogging
+					</label>
+				</div>
+				<div class="radio">
+					<label>
+						<input name="Sport" value="gym" type="radio" />gym
+					</label>
+				</div>
+				<div class="radio">
+					<label>
+						<input name="Sport" value="no" type="radio" />neither of above
+					</label>
+				</div>
 			</div>
 			<div class="clearfix"></div>
 			<input type="button" name="previous" class="previous action-button" value="Previous" />
@@ -219,10 +233,22 @@
 		<fieldset>
 			<h2 class="fs-title">Place to stay</h2>
 			<h3 class="fs-subtitle">Were do you want to live?</h3>
-			<div id="Accommodation">
-				<input name="Accommodation" value="dormitory" type="radio" /><label>in dormitory if possible</label>
-				<input name="Accommodation" value="shareroom" type="radio" /><label>rent the room with other students</label>
-				<input name="Accommodation" value="ownroom" type="radio" /><label>rent my own room</label>
+			<div id="Accommodation" class="question">
+				<div class="radio">
+					<label>
+						<input name="Accommodation" value="dormitory" type="radio" />in dormitory if possible
+					</label>
+				</div>
+				<div class="radio">
+					<label>
+						<input name="Accommodation" value="shareroom" type="radio" />rent the room with other students
+					</label>
+				</div>
+				<div class="radio">
+					<label>
+						<input name="Accommodation" value="ownroom" type="radio" />rent my own room
+					</label>
+				</div>
 			</div>
 			<div class="clearfix"></div>
 			<input type="button" name="previous" class="previous action-button" value="Previous" />
@@ -231,10 +257,10 @@
 		<fieldset>
 			<h2 class="fs-title">Transport</h2>
 			<h3 class="fs-subtitle">How do you preffer to move around city?</h3>
-			<div id="Transport"></div>
+			<div id="Transport" class="question"></div>
 			<div class="clearfix"></div>
 			<input type="button" name="previous" class="previous action-button" value="Previous" />
-			<input type="submit" class="submit action-button" value="Submit" />
+			<input type="submit" class="submit action-button alt" value="Submit" />
 		</fieldset>
 	</form>
 </article>

@@ -1,4 +1,4 @@
-<div>
+<section>
 
 	<h2>MIASTA</h2>
 
@@ -34,4 +34,4 @@
 
 	<p><a class="btn btn-default" href="/miasta">Zobacz ranking &raquo;</a></p>
 
-</div><!-- /.col-lg-4 -->
+</section><!-- /.col-lg-4 -->

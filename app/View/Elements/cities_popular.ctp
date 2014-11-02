@@ -1,5 +1,5 @@
 <!-- Portfolio -->
-<section>
+<section id="popular_cities">
   <header class="major">
     <h2>Popular cities</h2>
   </header>
@@ -15,7 +15,7 @@
 
 		<div class="4u">
 		      <section class="box">
-		        <a href="#" class="image featured"><img src="/img/miasta/<?php echo $city['City']['photo']; ?>" alt="" /></a>
+		        <a href="#" class="image featured"><div class="wrap"><img src="/img/miasta/<?php echo $city['City']['photo']; ?>" alt="Logo of <?php echo $city['City']['nazwa']; ?>" /></div></a>
 		        <header>
 		          <h3><?php echo $city['City']['nazwa']; ?></h3>
 		        </header>

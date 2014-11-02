@@ -35,7 +35,7 @@
 			animation: none !important;
 		}
 
-	body,input,textarea,select
+	body,input,textarea,select,section
 	{
 		font-family: 'Source Sans Pro';
 		font-weight: 300;
@@ -246,12 +246,6 @@
 				margin-bottom: 0;
 			}
 
-			section:last-child,
-			article:last-child
-			{
-				margin-bottom: 0;
-			}
-
 		header
 		{
 		}
@@ -383,6 +377,15 @@
 				display: block;
 				width: 100%;
 			}
+
+			#popular_cities .image img
+			{
+				display: block;
+				width: auto;
+				max-height: 300px;
+				margin: auto;
+			}
+
 
 			.image.centered
 			{

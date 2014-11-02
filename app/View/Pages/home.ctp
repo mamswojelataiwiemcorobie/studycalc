@@ -40,32 +40,29 @@ App::uses('Debugger', 'Utility');*/
           <div class="row">
             <div class="6u">
               <section class="box">
-                <a href="#" class="image featured"><img src="images/pic08.jpg" alt="" /></a>
+                <a href="#" class="image featured"><img src="img/ucl.jpg" alt="" /></a>
                 <header>
-                  <h3>Magna tempus consequat lorem</h3>
-                  <p>Posted 45 minutes ago</p>
+                  <h3>University College London</h3>
                 </header>
-                <p>Lorem ipsum dolor sit amet sit veroeros sed et blandit consequat sed veroeros lorem et blandit  adipiscing feugiat phasellus tempus hendrerit, tortor vitae mattis tempor, sapien sem feugiat sapien, id suscipit magna felis nec elit. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos lorem ipsum dolor sit amet.</p>
+                <p>UCL was established in 1826 to open up education in England for the first time to students of any race, class or religion. UCL was also the first university to welcome female students on equal terms with men. 
+                Academic excellence and conducting research that addresses real-world problems inform our ethos to this day.</p>
                 <footer>
                   <ul class="actions">
-                    <li><a href="#" class="button icon fa-file-text">Continue Reading</a></li>
-                    <li><a href="#" class="button alt icon fa-comment">33 comments</a></li>
+                    <li><a href="#" class="button icon fa-file-text">Costs</a></li>
                   </ul>
                 </footer>
               </section>
             </div>
             <div class="6u">
               <section class="box">
-                <a href="#" class="image featured"><img src="images/pic09.jpg" alt="" /></a>
+                <a href="#" class="image featured"><img src="img/glasgow.jpg" alt="" /></a>
                 <header>
-                  <h3>Aptent veroeros et aliquam</h3>
-                  <p>Posted 45 minutes ago</p>
+                  <h3>University of Glasgow</h3>
                 </header>
-                <p>Lorem ipsum dolor sit amet sit veroeros sed et blandit consequat sed veroeros lorem et blandit  adipiscing feugiat phasellus tempus hendrerit, tortor vitae mattis tempor, sapien sem feugiat sapien, id suscipit magna felis nec elit. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos lorem ipsum dolor sit amet.</p>
+                <p>The University of Glasgow (Scottish Gaelic: Oilthigh Ghlaschu, Latin: Universitas Glasguensis) is the fourth-oldest university in the English-speaking world and one of Scotland's four ancient universities. The university was founded in 1451 and is often ranked in the world's top 100 universities in tables compiled by various bodies. In 2013, Glasgow moved to its highest ever position, placing 51st in the world and 9th in the UK in the QS World University Rankings.</p>
                 <footer>
                   <ul class="actions">
-                    <li><a href="#" class="button icon fa-file-text">Continue Reading</a></li>
-                    <li><a href="#" class="button alt icon fa-comment">33 comments</a></li>
+                    <li><a href="#" class="button icon fa-file-text">Costs</a></li>
                   </ul>
                 </footer>
               </section>
@@ -78,8 +75,8 @@ App::uses('Debugger', 'Utility');*/
 
     <!-- SERVICE BOXES
 ================================================== -->
-   <section class="service-box topspace30" id="service-top">
-    <div class="container">
+   <section class="service-box box topspace30" id="service-top">
+    <div>
       <div class="row" id="tops">
         <div class="col-md-4 text-center animated fadeInLeftNow notransition">
           <div class="icon-box-top">

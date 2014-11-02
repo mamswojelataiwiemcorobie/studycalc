@@ -1,4 +1,4 @@
-<div>
+<section>
 
           <h2>KIERUNKI</h2>
 
@@ -35,4 +35,4 @@
 
           <p><a class="btn btn-default" href="/kierunki">Zobacz ranking &raquo;</a></p>
 
-</div><!-- /.col-lg-4 -->
+</section><!-- /.col-lg-4 -->

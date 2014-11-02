@@ -31,7 +31,7 @@
 		$newfoto= substr($foto, 0, -4).".png";
 ?>
 		<li>
-			<div class="boxcontainer" style="height:270px">
+			<div class="boxcontainer">
 				<img src="img/uczelnie_min/<?php echo $newfoto; ?>" alt="" />
 				<div class="roll">
 					<div class="wrapcaption">
