@@ -18,11 +18,11 @@
 
 				   array( 'controller' => 'universities',
 
-						  'action' => 'view',
+						  'action' => 'university_result',
 
-						  'id' => $university['University']['id'],
+						  $university['University']['id'],
 
-						  'slug'=>$slug
+						  $slug
 
 				   )
 

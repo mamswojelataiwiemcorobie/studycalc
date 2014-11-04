@@ -92,38 +92,56 @@
 			</div>
 	</div>
 	<div class="4u">
-	
-		<!-- Sidebar -->
-			<section id="filtry" class="box">
+			<section id="filtry" class="box filters">
 				<a href="#" class="image featured filter_img"><img src="/img/mono_filter.png" alt=""/></a>
-				<header>
+				<!-- <header>
 					<h3>Filter</h3>
-				</header>
-				<ul>
-					<?php foreach ($result['conditions'] as $condition):?>
-						<li><?php echo $condition; ?></li>
-					<?php endforeach; ?>
-				</ul>
-				<p></p>
+				</header> -->
+				<form>
+					<fieldset>
+						<h3>Country</h3>
+						<ul>
+						<?php //foreach ($cities as $city):?>
+						 	<li>
+								<input type="checkbox" name="city_id" value="<?php //echo $city['City']['id']; ?>">
+								<label for="city_id"><a class="param-toggle <?php //if (isset($city['City']['selected'])) echo 'checked'; ?>" href="<?php //echo $current_url. '&city_id='. $city['City']['id']; ?>"><span><?php echo $result['conditions']['country']; ?></span></a></label>
+							</li>
+						<?php //endforeach; ?>
+						</ul>
+					</fieldset>
+					<?php if (isset($cities)) : ?>
+					<fieldset>
+						<h3>City</h3>
+						<ul>
+							<?php foreach ($cities as $city):?>
+						 	<li>
+								<input type="checkbox" name="city_id" value="<?php echo $city['City']['id']; ?>">
+								<label for="city_id"><a class="param-toggle <?php if (isset($city['City']['selected'])) echo 'checked'; ?>" href="<?php echo $url. '&city_id='. $city['City']['id']; ?>"><span><?php echo $city['City']['nazwa']; ?></span></a></label>
+							</li>
+						<?php endforeach; ?>
+						</ul>
+					</fieldset>
+					<?php endif; ?>
+					<?php if (isset($scholarships)) : ?>
+					<fieldset>
+						<h3>Scholarship</h3>
+						<p>Do you think you have a chance for one?</p>
+						<ul>
+							<?php foreach ($scholarships as $scholarship):?>
+						 	<li>
+								<input type="checkbox" name="city_id" value="<?php echo $scholarship['Scholarship']['id']; ?>">
+								<label for="city_id"><a class="param-toggle <?php if (isset($scholarship['Scholarship']['selected'])) : echo 'checked'; ?>" href="<?php 
+								$pattern = '/&scholarship_id='. $scholarship['Scholarship']['id'] . '/';
+								echo preg_replace($pattern, ' ',$url); else :?>" href="<?php echo $url. '&scholarship_id='. $scholarship['Scholarship']['id']; endif; ?>"><span><?php echo $scholarship['Scholarship']['name']; ?></span></a></label>
+							</li>
+						<?php endforeach; ?>
+						</ul>
+					</fieldset>
+					<?php endif; ?>
+				</form>
 				<footer>
 					<a href="#" class="button alt">Filter</a>
 				</footer>
 			</section>
-			<section class="box">
-				<header>
-					<h3>Feugiat consequat</h3>
-				</header>
-				<p>Veroeros sed amet blandit consequat veroeros lorem blandit adipiscing et feugiat sed lorem consequat feugiat lorem dolore.</p>
-				<ul class="divided">
-					<li><a href="#">Sed et blandit consequat sed</a></li>
-					<li><a href="#">Hendrerit tortor vitae sapien dolore</a></li>
-					<li><a href="#">Sapien id suscipit magna sed felis</a></li>
-					<li><a href="#">Aptent taciti sociosqu ad litora</a></li>
-				</ul>
-				<footer>
-					<a href="#" class="button alt">Ipsum consequat</a>
-				</footer>
-			</section>
-
 	</div>
 </div>

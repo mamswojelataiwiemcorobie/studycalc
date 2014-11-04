@@ -30,7 +30,7 @@
 		// Outputs: <meta name="viewport" content="width=device-width, initial-scale=1.0">
 	?>
 	
-	<title><?php echo $title_for_layout . ' | Porównywarka Uczelni'  ?></title>
+	<title><?php echo $title_for_layout . ' | Study Calculator'  ?></title>
 	
 	<?php
 		echo '<link rel="shortcut icon" href="http://szkolywyzsze.edu.pl/img/icon/icon5.ico" />';
@@ -121,7 +121,7 @@
 				<div id="header">
 					
 					<!-- Logo -->
-						<h1><a href="/"><img src="/img/logo_kwadrat.png"/></a></h1>
+						<h1 class="logo"><a href="/"><img src="/img/logo_kwadrat.png"/></a></h1>
 					
 					<!-- Nav -->
 					<?php echo $this->element('menu_top'); ?>

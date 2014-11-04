@@ -1,7 +1,7 @@
 <section id="banner">
 	<header>
-		<h2>Howdy. This is Dopetrope.</h2>
-		<p>A responsive template by HTML5 UP</p>
+		<h2>Study Calculator</h2>
+		<p>A quick way to assess the costs of studying</p>
 	</header>
 </section>
 <!-- Intro -->
@@ -11,9 +11,9 @@
 			<section class="first">
 				<i class="icon featured fa-cog"></i>
 				<header>
-					<h2>Ipsum consequat</h2>
+					<h2>Personalize</h2>
 				</header>
-				<p>Nisl amet dolor sit ipsum veroeros sed blandit consequat veroeros et magna tempus.</p>
+				<p>Tell as where you whant to study and basic things about your life style.</p>
 			</section>
 		</div>
 		<div class="4u">
@@ -29,16 +29,15 @@
 			<section class="last">
 				<i class="icon featured alt2 fa-star"></i>
 				<header>
-					<h2>Tempus adipiscing</h2>
+					<h2>Choose the best place to study</h2>
 				</header>
-				<p>Nisl amet dolor sit ipsum veroeros sed blandit consequat veroeros et magna tempus.</p>
+				<p>Compare your results in various destination.</p>
 			</section>
 		</div>
 	</div>
 	<footer>
 		<ul class="actions">
 			<li><a href="/universities/form" class="button big">Get Started</a></li>
-			<li><a href="#" class="button alt big">Learn More</a></li>
 		</ul>
 	</footer>
 </section>

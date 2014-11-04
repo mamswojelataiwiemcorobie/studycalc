@@ -92,14 +92,14 @@
 
 </style>
 <article class="box post">
-<!-- 	<a href="#" class="image featured"><img src="/images/16.jpg" alt="" /></a>
+<!-- <a href="#" class="image featured"><img src="/images/16.jpg" alt="" /></a> -->
 	<header>
-		<h2>Check your wallet!</h2>
-		<p>Please fill out the form</p>
-	</header> -->
+		<h2>Please fill the form</h2>
+		<p>Note that not every field is required. In fact the only one is the country.</p>
+	</header>
 	<ol id="progressbar" class="progtrckr" data-progtrckr-steps="5">
-	    <li class="active">Location</li>
-	    <li class="">Courses</li>
+	    <li class="active">Courses</li>
+	    <li class="">Location</li>
 	    <li class="">Live Style</li>
 	    <li class="">Accommodation</li>
 	    <li class="">Transport</li>
@@ -148,7 +148,7 @@
 													'type' => 'select' ,
 
 													'security' => false));	
-				echo $this->Form->input('miasto', array('class' => 'form-control',
+				echo $this->Form->input('City', array('class' => 'form-control',
 
 													'name' => 'city_id',
 
@@ -158,7 +158,7 @@
 
 													'security' => false));
 
-				echo $this->Form->input('id', array('name' => 'university_id',
+				echo $this->Form->input('University_id', array('name' => 'university_id',
 
 													'class' => 'form-control',
 
@@ -349,7 +349,7 @@
 </script>
 <?php
 //lokalizacja
-$this->Js->get('#UniversityCountryId')->event('change', 
+$this->Js->get('#country_id')->event('change', 
 
 	$this->Js->request(array(
 
@@ -359,7 +359,7 @@ $this->Js->get('#UniversityCountryId')->event('change',
 
 		), array(
 
-			'update'=>'#UniversityMiasto',
+			'update'=>'#City',
 
 			'async' => true,
 
@@ -379,7 +379,7 @@ $this->Js->get('#UniversityCountryId')->event('change',
 
 	);
 
-$this->Js->get('#UniversityMiasto')->event('click', 
+$this->Js->get('#City')->event('click', 
 
 	$this->Js->request(array(
 
@@ -389,7 +389,7 @@ $this->Js->get('#UniversityMiasto')->event('click',
 
 		), array(
 
-			'update'=>'#UniversityId',
+			'update'=>'#University_id',
 
 			'async' => true,
 

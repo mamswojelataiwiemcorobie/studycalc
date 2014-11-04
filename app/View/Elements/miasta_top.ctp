@@ -12,17 +12,13 @@
 
 	<?php foreach ($cities as $city): ?>
 
-		  <?php $slug = Inflector::slug($city['City']['nazwa'],'-');?>
+		<li class="list-group-item"><?php echo $this->Html->link($city['City']['nazwa'],
 
-				  <li class="list-group-item"><?php echo $this->Html->link($city['City']['nazwa'],
+					   array( 'controller' => 'universities',
 
-					   array( 'controller' => 'cities',
+							  'action' => 'city_result',
 
-							  'action' => 'view',
-
-							  'id' => $city['City']['id'],
-
-							  'slug'=>$slug
+							  $city['City']['nazwa']
 
 					   )
 
@@ -32,6 +28,6 @@
 
 	</ul>
 
-	<p><a class="btn btn-default" href="/miasta">Zobacz ranking &raquo;</a></p>
+	<p><a class="button alt" href="/miasta">Zobacz ranking &raquo;</a></p>
 
 </section><!-- /.col-lg-4 -->

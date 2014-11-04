@@ -35,13 +35,13 @@
 				<img src="img/uczelnie_min/<?php echo $newfoto; ?>" alt="" />
 				<div class="roll">
 					<div class="wrapcaption">
-						<a href="<?php echo "uczelnia/", $slug=Inflector::slug($universities[$t1]['University']['nazwa'],'-'),'-',$universities[$t1]['University']['id'];?>">
+						<a href="<?php echo "universities/university_result/". $universities[$t1]['University']['id']. "/". $slug=Inflector::slug($universities[$t1]['University']['nazwa'],'-');?>">
 						<i class="icon-link captionicons"></i></a>
 					</div>
 				</div>
 				<h1></h1>
 				<p>
-					<a href="<?php echo "uczelnia/", $slug=Inflector::slug($universities[$t1]['University']['nazwa'],'-'),'-',$universities[$t1]['University']['id'];?>">
+					<a href="<?php echo "universities/university_result/". $universities[$t1]['University']['id']. "/". $slug=Inflector::slug($universities[$t1]['University']['nazwa'],'-');?>">
 						<?php echo $universities[$t1]['University']['nazwa'];?>
 					</a>
 				

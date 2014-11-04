@@ -737,7 +737,7 @@ class UniversitiesController extends AppController {
 		$this->set('description_for_layout', 'See how much do you have to pay for your studies.');
 		$this->set('keywords_for_layout', 'cost, of, study');
 
-		Debugger::dump($this->request->query);
+		//Debugger::dump($this->request->query);
 
 		if($this->request->query) {
 
@@ -751,6 +751,12 @@ class UniversitiesController extends AppController {
 			$cities = $this-> University-> City-> find ('all', array('condition' => array('country_id' => $country_id),
 																		'order' => array('City.srednia DESC'),
 																		'limit' => 5));
+
+			//kraje do filtra
+			$kraje = $this-> University-> find ('list', array(
+															'fields' => array('University.country_id', 'Country.name'),
+															'group' => array('University.country_id'),
+															'contain' => array('Country')));
 
 			// uczelnie w mieście
 			$this->University->contain('UniversitiesParameter');
@@ -838,7 +844,8 @@ class UniversitiesController extends AppController {
 			} else {
 				$city_id = $this->request->query['city_id'];
 
-				$miasto = $this-> University-> City-> find ('first', array('condition' => array('id' => $city_id)));
+				$this->University->City->contain();
+				$miasto = $this->University->City->find('first', array('conditions' => array('City.id' => $city_id)));
 
 				foreach ($cities as $key => $city) {
 					if ($city['City']['id'] == $city_id) {
@@ -933,7 +940,7 @@ class UniversitiesController extends AppController {
 						}
 					}
 					$this-> set ('scholarships', $scholarships);
-					Debugger::dump($scholarships);
+					//Debugger::dump($scholarships);
 
 
 				} else {
@@ -959,17 +966,19 @@ class UniversitiesController extends AppController {
 			}
 			$this-> set ('result', $result);
 			$this-> set ('cities', $cities);
+			$this-> set ('countries', $kraje);
 		} 
 	}
 
 	public function city_result($name) {
 
-		$miasto = $this-> University-> City-> find ('first', array('condition' => array('nazwa' => $name)));
+		$this->University->City->contain();
+		$miasto = $this-> University-> City-> find ('first', array('conditions' => array('City.nazwa' => $name)));
+		$city_id = $miasto['City']['id'];
 
 		$this->University->Country->contain('BasketinCountry');
 		$kraj = $this-> University-> Country-> find ('first', array('fields' => array('name'), 
 																		'conditions' => array('id' => $miasto['City']['country_id'])));
-		Debugger::dump($kraj);
 
 
 		$result['conditions']['country'] = $kraj['Country']['name'];
@@ -1001,19 +1010,37 @@ class UniversitiesController extends AppController {
 
 		// uczelnie w mieście
 		$this->University->contain('UniversitiesParameter');
-		$uczelnie = $this->University->find('all', array('conditions' => $miasto['City']['id']));
+		$uczelnie = $this->University->find('all', array('conditions' => $city_id,
+														'limit'=>6,
+														'order' => array('University.srednia' => 'desc')));
 		$this-> set ('uczelnie', $uczelnie);
+
+		//url
+		$country_id = $kraj['Country']['id'];
+		$url= "http://calc.stdclc.com/universities/form_result?country_id=". $country_id;
+		//kilka mista do filtra
+		$this->University->City-> contain();
+		$cities = $this-> University-> City-> find ('all', array('condition' => array('country_id' => $country_id),
+																	'order' => array('City.srednia DESC'),
+																	'limit' => 5));
+		foreach ($cities as $key => $city) {
+					if ($city['City']['id'] == $city_id) {
+						$cities[$key]['City']['selected'] = 1;
+					}
+				}
+		$this -> set('url', $url);
+		$this-> set ('cities', $cities);
 	}
 
 	public function university_result($university_id) {
 
-		$uczelnia = $this-> University-> find ('first', array('condition' => array('id' => $university_id)));
+		$uczelnia = $this-> University-> find ('first', array('conditions' => array('University.id' => $university_id)));
 
 		$this->University->Country->contain('BasketinCountry');
-		$kraj = $this-> University-> Country-> find ('first', array('fields' => array('name'), 
+		$kraj = $this-> University-> Country-> find ('first', array('fields' => array('Country.name'), 
 																		'conditions' => array('id' => $uczelnia['University']['country_id'])));
 		$this->University->City->contain();
-		$miasto = $this-> University-> City-> find ('first', array('conditions' => array('id' => $uczelnia['University']['city_id'])));
+		$miasto = $this-> University-> City-> find ('first', array('conditions' => array('City.id' => $uczelnia['University']['city_id'])));
 		
 		$result['conditions']['country'] = $kraj['Country']['name'];
 		$result['conditions']['city'] = $miasto['City']['nazwa'];
@@ -1052,7 +1079,7 @@ class UniversitiesController extends AppController {
 
 		// uczelnie w mieście - można podać koszt, może?
 		$this->University->contain('UniversitiesParameter');
-		$uczelnie = $this->University->find('all', array('conditions' => $miasto['City']['id']));
+		$uczelnie = $this->University->find('all', array('conditions' => array('University.city_id' => $miasto['City']['id'])));
 		$this-> set ('uczelnie', $uczelnie);
 	}
 
@@ -1758,6 +1785,22 @@ class UniversitiesController extends AppController {
         }
         $this->Session->setFlash(__('Kierunek nie mógł być usunięty'));
         $this->redirect(array('action' => 'index'));
+    }
+
+    public function save_cities() {
+    	$this->University->contain();
+		$universities = $this->University->find('all');
+
+		foreach ($universities as $university) {
+				$city = $this->University->City->find('first', array('conditions' => array('City.nazwa' =>$university['University']['city_id'] )));
+
+				if (!empty($city)) {
+					Debugger::dump($university['University']['id']);
+
+					$this->University->id = $university['University']['id'];
+					$this->University->saveField('city_id', $city['City']['id']);
+				}
+		}
     }
  
 }

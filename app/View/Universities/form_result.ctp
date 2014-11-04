@@ -98,8 +98,7 @@
 			</div>
 		<?php endif; ?>
 	</div>
-	<div class="4u">
-	
+	<div class="4u">	
 		<!-- Sidebar -->
 			<section id="filtry" class="box filters">
 				<a href="#" class="image featured filter_img"><img src="/img/mono_filter.png" alt=""/></a>
@@ -111,12 +110,17 @@
 					<fieldset>
 						<h3>Country</h3>
 						<ul>
-						<?php //foreach ($cities as $city):?>
+						<?php foreach ($countries as $id => $country):?>
 						 	<li>
-								<input type="checkbox" name="city_id" value="<?php //echo $city['City']['id']; ?>">
-								<label for="city_id"><a class="param-toggle <?php //if (isset($city['City']['selected'])) echo 'checked'; ?>" href="<?php //echo $current_url. '&city_id='. $city['City']['id']; ?>"><span><?php echo $result['conditions']['country']['name']; ?></span></a></label>
+								<input type="checkbox" name="country_id" value="<?php echo $id; ?>">
+								<label for="country_id"><a class="param-toggle <?php if ($result['conditions']['country'] == $country) : echo 'checked'; ?>" href="<?php 
+										$pattern = '/&country_id='. $id . '/';
+										echo preg_replace($pattern, ' ',$current_url); 
+									else : ?>" href="<?php $pattern = '/&country_id=\d\d/'; $sub = '&country_id='. $id;
+										echo preg_replace($pattern, $sub,$current_url);	endif; ?>">
+									<span><?php echo $country; ?></span></a></label>
 							</li>
-						<?php //endforeach; ?>
+						<?php endforeach; ?>
 						</ul>
 					</fieldset>
 					<?php if (isset($cities)) : ?>
@@ -126,7 +130,14 @@
 							<?php foreach ($cities as $city):?>
 						 	<li>
 								<input type="checkbox" name="city_id" value="<?php echo $city['City']['id']; ?>">
-								<label for="city_id"><a class="param-toggle <?php if (isset($city['City']['selected'])) echo 'checked'; ?>" href="<?php echo $current_url. '&city_id='. $city['City']['id']; ?>"><span><?php echo $city['City']['nazwa']; ?></span></a></label>
+								<label for="city_id"><a class="param-toggle <?php if (isset($city['City']['selected'])) : echo 'checked'; ?>" href="<?php 
+									$pattern = '/&city_id='. $city['City']['id'] . '/';
+									echo preg_replace($pattern, ' ',$current_url); 
+									else : ?>" href="<?php $pattern = '/&city_id=\d/'; $sub = '&city_id='. $city['City']['id'];
+								echo preg_replace($pattern, $sub,$current_url);
+
+								endif; ?>"><span><?php echo $city['City']['nazwa']; ?>
+								</span></a></label>
 							</li>
 						<?php endforeach; ?>
 						</ul>
@@ -153,21 +164,6 @@
 					<a href="#" class="button alt">Filter</a>
 				</footer>
 			</section>
-			<section class="box">
-				<header>
-					<h3>Feugiat consequat</h3>
-				</header>
-				<p>Veroeros sed amet blandit consequat veroeros lorem blandit adipiscing et feugiat sed lorem consequat feugiat lorem dolore.</p>
-				<ul class="divided">
-					<li><a href="#">Sed et blandit consequat sed</a></li>
-					<li><a href="#">Hendrerit tortor vitae sapien dolore</a></li>
-					<li><a href="#">Sapien id suscipit magna sed felis</a></li>
-					<li><a href="#">Aptent taciti sociosqu ad litora</a></li>
-				</ul>
-				<footer>
-					<a href="#" class="button alt">Ipsum consequat</a>
-				</footer>
-			</section>
-
 	</div>
 </div>
+<?php unset($result); ?>
