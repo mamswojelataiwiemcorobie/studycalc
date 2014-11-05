@@ -51,8 +51,8 @@
 						
 						echo $this->Form->create('Contact', array('name' => 'MYFORM', 'id' => 'MYFORM','required' => 'required'));
 
-						echo $this->Form->input('name', array('div' => false, 'label' => false, 'name' => 'name', 'size' => '30', 'required' => 'required', 'type' => 'text', 'id' => 'name', 'class' => 'col-md-6 leftradius', 'placeholder' => 'Imie, Nazwisko' ));
-						echo $this->Form->input('email', array('div' => false, 'label' => false, 'name' => 'email', 'required' => 'required', 'size' => '30', 'id' => 'email', 'class' => 'col-md-6 rightradius', 'placeholder' => 'Twój Mail' ));
+						echo $this->Form->input('name', array('div' => false, 'label' => false, 'name' => 'name', 'size' => '30', 'required' => 'required', 'type' => 'text', 'id' => 'name', 'class' => 'col-md-6 leftradius', 'placeholder' => 'Name, Surname' ));
+						echo $this->Form->input('email', array('div' => false, 'label' => false, 'name' => 'email', 'required' => 'required', 'size' => '30', 'id' => 'email', 'class' => 'col-md-6 rightradius', 'placeholder' => 'Your E-mail' ));
 
 						echo $this->Form->input('thema', array(
 							'required' => 'required',
@@ -62,18 +62,14 @@
 						    'options' => array('Współpraca PR, materiały prasowe', 'Uzupełnienie profilu uczelni', 'Aktualizacja profilu'),
 						    'empty' => '(Wybierz Temat)'
 						));
-						echo $this->Form->input('message', array('div' => false, 'required' => 'required', 'label' => false, 'type' => 'textarea', 'class' => 'col-md-12 allradius', 'name' => 'message', 'placeholder' => 'Wiadomość', 'rows'=>'9' ));
+						echo $this->Form->input('message', array('div' => false, 'required' => 'required', 'label' => false, 'type' => 'textarea', 'class' => 'col-md-12 allradius', 'name' => 'message', 'placeholder' => 'Message', 'rows'=>'9' ));
 						echo $this->Form->input('IP', array('type' => 'hidden', 'value' => $ip));
 						echo $this->Form->input('DATE_TIME', array('type' => 'hidden', 'value' => $date));
-						echo $this->Form->input('PATH', array('type' => 'hidden', 'value' => $path));
+						echo $this->Form->input('PATH', array('type' => 'hidden', 'value' => $path));?>
 						
-						$this->Captcha->render($captchaSettings);
+						<div class="captcha"><?php $this->Captcha->render($captchaSettings);?></div>
 						
-						echo $this->Recaptcha->display();
-						if(!empty($this->validationErrors['Contact']['recaptcha_response_field'])){
-							echo $this->Html->tag('div', $this->validationErrors['Contact']['recaptcha_response_field'][0], array('class'=>'error-message'));
-						}
-						echo $this->Form->submit('Wyślij', array('div' => true, 'label' => false, 'type' => 'submit', 'id' => 'Send', 'class' => 'btn btn-default btn-md', 'name'=>'button'));
+						<?php echo $this->Form->submit('Send', array('div' => true, 'label' => false, 'type' => 'submit', 'id' => 'Send', 'class' => 'btn btn-default btn-md', 'name'=>'button'));
 						echo $this->Form->end();
 				?>
 				</div>

@@ -15,11 +15,12 @@
 
 		<div class="4u">
 		      <section class="box">
-		        <a href="#" class="image featured"><div class="wrap"><img src="/img/miasta/<?php echo $city['City']['photo']; ?>" alt="Logo of <?php echo $city['City']['nazwa']; ?>" /></div></a>
+		        <a href="#" class="image featured"><img src="/img/miasta/<?php echo $city['City']['photo']; ?>" alt="Logo of <?php echo $city['City']['nazwa']; ?>" /></a>
 		        <header>
 		          <h3><?php echo $city['City']['nazwa']; ?></h3>
 		        </header>
-		        <p>Lorem ipsum dolor sit amet sit veroeros sed amet blandit consequat veroeros lorem blandit  adipiscing et feugiat phasellus tempus dolore ipsum lorem dolore.</p>
+		        <p><?php echo $this->Text->truncate($city['City']['opis'], 250, array('ellipsis' => '...',
+        					'exact' => false)); ?></p>
 		        <footer>
 		        	<a href="/universities/city_result/<?php echo $city['City']['nazwa']; ?>" class="button alt">Find out more</a>
 		        </footer>

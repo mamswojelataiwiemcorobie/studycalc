@@ -73,7 +73,7 @@ class PagesController extends AppController {
 		$this->render(implode('/', $path));
 	}
 	public function home() {
-		$this->set('title_for_layout', 'Najlepsze uczelnie');
+		$this->set('title_for_layout', 'Quick way to assess the costs of studying');
 		$this->set('description_for_layout', 'Ranking uczelni. Najlepsze uczelnie na rynku.');
 		$this->set('keywords_for_layout', 'najlepsze, uczelnie, ranking');
 	}

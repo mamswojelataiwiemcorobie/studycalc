@@ -579,13 +579,14 @@ class UniversitiesController extends AppController {
 	}
 	public function home_slider() {
 		$this->University->contain();
-		$universities = $this->University->find('all');
+		$universities = $this->University->find('all', array('conditions' => array('University.photo !=' => ''),
+															'order' => array('University.srednia' => 'desc'),
+															'limit' => 8));
 		if (!empty($this -> request -> params['requested'])) {
 		   return $universities;
 		} else {
 			$this->set('universities', $universities);
 		}
-		$dt_recs = $this->University->find('count');
 
 	}
 	public function top() {
@@ -748,7 +749,7 @@ class UniversitiesController extends AppController {
 
 			//kilka mista do filtra
 			$this->University->City-> contain();
-			$cities = $this-> University-> City-> find ('all', array('condition' => array('country_id' => $country_id),
+			$cities = $this-> University-> City-> find ('all', array('conditions' => array('country_id' => $country_id),
 																		'order' => array('City.srednia DESC'),
 																		'limit' => 5));
 
@@ -761,15 +762,18 @@ class UniversitiesController extends AppController {
 			// uczelnie w mieście
 			$this->University->contain('UniversitiesParameter');
 			$uczelnie = $this->University->find('all', array('conditions' => array('country_id' => $country_id,
-																					'rank <=' => 6)));
+																					'University.photo !=' => ''),
+																'limit' => 6));
 			$this-> set ('uczelnie', $uczelnie);
 
 			//rozrywka
 			$result['entertainment'] = 0;
+			$result['sport'] = 0; 
 			foreach ($kraj['BasketinCountry'] as $entertainment) {
 				if ($entertainment['basket_id'] == 2) { //id wyjścia do kina
 					$result['entertainment'] = $result['entertainment'] + $entertainment['price'];
-				}
+				} elseif ($entertainment['basket_id'] == 3) //gym
+					$result['sport'] = $result['sport'] + $entertainment['price'];
 			}
 			if (isset($this->request->query['Enterteinment'])) {
 				$entertain = $this->request->query['Enterteinment'];
@@ -785,6 +789,22 @@ class UniversitiesController extends AppController {
 				}
 			} else {
 				$result['entertainment']= round($result['entertainment']*52); //1x w tygodniu
+			}
+
+			if (isset($this->request->query['Sport'])) {
+				$sport = $this->request->query['Sport'];
+				$result['conditions']['Sport'] = $sport;
+				switch ($sport) {
+					case 'jogging':
+						$result['sport'] = $result['sport']; break;
+						break;
+					case 'gym': 
+						$result['sport'] = round($result['sport']*52); break;
+					case 'no':
+						$result['sport'] = 0; break;
+				}
+			} else {
+				$result['sport']=$result['sport']; 
 			}
 
 			//zakupy
@@ -838,6 +858,7 @@ class UniversitiesController extends AppController {
 					}
 				} else {
 					$result['transport'] = round(($bilety_m/$miasta_bm) * 12);
+					$result['conditions']['transport'] = 'Public transport';
 				}
 				/*dodawanie kosztów życia w mieście  
 				+ koszt studió*/
@@ -889,18 +910,21 @@ class UniversitiesController extends AppController {
 
 					$result['conditions']['university'] = $uczelnia['University']['nazwa'];
 
-					if (isset($this->request->query['accomodation'])) {
-						$accomodation = $this->request->query['accomodation'];
+					if (isset($this->request->query['Accommodation'])) {
+						$accomodation = $this->request->query['Accommodation'];
 						switch ($accomodation) {
 							case 'dormitory':
-								$akademik = $this-> University-> UniversitiesParameter-> find ('first', array('fields' =>array('akademik'), 
-													'condition' => array('university_id' => $university_id)));
-								$result['accomodation'] = $miasto['UniversitiesParameter']['akademik'];
+								$result['accomodation'] = $uczelnia['UniversitiesParameter']['akademik']*12;
 								$result['conditions']['accomodation'] = 'Dormitory';
 								break;
-							
+							case 'shareroom':
+								$result['accomodation'] = $miasto['City']['pokoj_miejsce']*12;
+								$result['conditions']['accomodation'] = 'Shareroom';
+								break;
+
 							default:
-								# code...
+								$result['accomodation'] = $miasto['City']['pokoj']*12;
+								$result['conditions']['accomodation'] = 'Studio';
 								break;
 						}
 					} else {
@@ -944,8 +968,8 @@ class UniversitiesController extends AppController {
 
 
 				} else {
-					if (isset($this->request->query['accomodation'])) {
-						$accomodation = $this->request->query['accomodation'];
+					if (isset($this->request->query['Accomodation'])) {
+						$accomodation = $this->request->query['Accomodation'];
 						if ($accomodation == 'dormitory' || $accomodation == 'shareroom') {
 							$result['accomodation'] = $miasto['City']['pokoj_miejsce']*12;
 						} else {
@@ -957,7 +981,7 @@ class UniversitiesController extends AppController {
 				}
 
 			}
-			$result['sum'] = $result['dinner'] + $result['transport'] + $result['accomodation'] + $result['entertainment'];
+			$result['sum'] = $result['dinner'] + $result['transport'] + $result['accomodation'] + $result['entertainment'] + $result['sport'];
 			if (isset($result['course_price'])) {
 				$result['sum'] = $result['sum'] + $result['course_price'];
 			}
@@ -971,6 +995,9 @@ class UniversitiesController extends AppController {
 	}
 
 	public function city_result($name) {
+		$this->set('title_for_layout', 'See how much you will pay in '. $name);
+		$this->set('description_for_layout', 'See how much do you have to pay for your studies.');
+		$this->set('keywords_for_layout', 'cost, of, study'.$name);
 
 		$this->University->City->contain();
 		$miasto = $this-> University-> City-> find ('first', array('conditions' => array('City.nazwa' => $name)));
@@ -978,15 +1005,59 @@ class UniversitiesController extends AppController {
 
 		$this->University->Country->contain('BasketinCountry');
 		$kraj = $this-> University-> Country-> find ('first', array('fields' => array('name'), 
-																		'conditions' => array('id' => $miasto['City']['country_id'])));
+																		'conditions' => array('Country.id' => $miasto['City']['country_id'])));
 
 
 		$result['conditions']['country'] = $kraj['Country']['name'];
 		$result['conditions']['city'] = $name;
 
-		$this->set('title_for_layout', 'See how much you will pay in '. $name);
-		$this->set('description_for_layout', 'See how much do you have to pay for your studies.');
-		$this->set('keywords_for_layout', 'cost, of, study'.$name);
+		// uczelnie w mieście
+			$this->University->contain('UniversitiesParameter');
+			$uczelnie = $this->University->find('all', array('conditions' => array('city_id' => $city_id,
+																					'University.photo !=' => ''),
+																));
+			$this-> set ('uczelnie', $uczelnie);
+
+			//rozrywka
+			$result['entertainment'] = 0;
+			$result['sport'] = 0; 
+			foreach ($kraj['BasketinCountry'] as $entertainment) {
+				if ($entertainment['basket_id'] == 2) { //id wyjścia do kina
+					$result['entertainment'] = $result['entertainment'] + $entertainment['price'];
+				} elseif ($entertainment['basket_id'] == 3) //gym
+					$result['sport'] = $result['sport'] + $entertainment['price'];
+			}
+			if (isset($this->request->query['Enterteinment'])) {
+				$entertain = $this->request->query['Enterteinment'];
+				$result['conditions']['Enterteinment'] = $entertain;
+				switch ($entertain) {
+					case 'hardly':
+						$result['entertainment'] = $result['entertainment']; //tylko raz
+						break;
+					case '1x': 
+						$result['entertainment'] = round($result['entertainment']*52); break;
+					case '2x':
+						$result['entertainment'] = round($result['entertainment']*104); break;
+				}
+			} else {
+				$result['entertainment']= round($result['entertainment']*52); //1x w tygodniu
+			}
+
+			if (isset($this->request->query['Sport'])) {
+				$sport = $this->request->query['Sport'];
+				$result['conditions']['Sport'] = $sport;
+				switch ($sport) {
+					case 'jogging':
+						$result['sport'] = $result['sport']; break;
+						break;
+					case 'gym': 
+						$result['sport'] = round($result['sport']*52); break;
+					case 'no':
+						$result['sport'] = 0; break;
+				}
+			} else {
+				$result['sport']=$result['sport']; 
+			}
 
 		//obiad 2 x w tygodniu na mieście
 		$result['dinner'] = $miasto['City']['obiad']*120; //+koszty obiadu
@@ -1005,22 +1076,15 @@ class UniversitiesController extends AppController {
 		//koszty życia:
 		//			sport
 
-		$result['sum'] = $result['dinner'] + $result['transport'] + $result['accomodation'] + $result['entertainment'];
+		$result['sum'] = $result['dinner'] + $result['transport'] + $result['accomodation'] + $result['entertainment'] +$result['sport'];
 		$this-> set ('result', $result);
-
-		// uczelnie w mieście
-		$this->University->contain('UniversitiesParameter');
-		$uczelnie = $this->University->find('all', array('conditions' => $city_id,
-														'limit'=>6,
-														'order' => array('University.srednia' => 'desc')));
-		$this-> set ('uczelnie', $uczelnie);
 
 		//url
 		$country_id = $kraj['Country']['id'];
 		$url= "http://calc.stdclc.com/universities/form_result?country_id=". $country_id;
 		//kilka mista do filtra
 		$this->University->City-> contain();
-		$cities = $this-> University-> City-> find ('all', array('condition' => array('country_id' => $country_id),
+		$cities = $this-> University-> City-> find ('all', array('conditions' => array('country_id' => $country_id),
 																	'order' => array('City.srednia DESC'),
 																	'limit' => 5));
 		foreach ($cities as $key => $city) {
@@ -1037,14 +1101,17 @@ class UniversitiesController extends AppController {
 		$uczelnia = $this-> University-> find ('first', array('conditions' => array('University.id' => $university_id)));
 
 		$this->University->Country->contain('BasketinCountry');
-		$kraj = $this-> University-> Country-> find ('first', array('fields' => array('Country.name'), 
+		$kraj = $this-> University-> Country-> find ('first', array('fields' => array('Country.name', 'Country.id'), 
 																		'conditions' => array('id' => $uczelnia['University']['country_id'])));
 		$this->University->City->contain();
 		$miasto = $this-> University-> City-> find ('first', array('conditions' => array('City.id' => $uczelnia['University']['city_id'])));
 		
 		$result['conditions']['country'] = $kraj['Country']['name'];
+		$result['conditions']['country_id'] = $kraj['Country']['id'];
 		$result['conditions']['city'] = $miasto['City']['nazwa'];
+		$result['conditions']['city_id'] = $miasto['City']['id'];
 		$result['conditions']['university'] = $uczelnia['University']['nazwa'];
+		$result['conditions']['university_id'] = $uczelnia['University']['id'];
 
 		$this->set('title_for_layout', 'See how much you will pay on '. $uczelnia['University']['nazwa']);
 		$this->set('description_for_layout', 'See how much do you have to pay for your studies.');
@@ -1061,26 +1128,76 @@ class UniversitiesController extends AppController {
 			$result['accomodation'] = $miasto['City']['pokoj'] *12;
 		}
 		
-		//koszty rozrywki (np. wyjście do kina), default 2x w tygodniu
-		$result['entertainment'] = 0;
-		foreach ($kraj['BasketinCountry'] as $entertainment) {
-			if ($entertainment['basket_id'] == 2) { //id wyjścia do kina
-				$result['entertainment'] = $result['entertainment'] + $entertainment['price'];
+		// uczelnie w mieście
+			$this->University->contain('UniversitiesParameter');
+			$uczelnie = $this->University->find('all', array('conditions' => array('University.city_id' => $miasto['City']['id'],
+																					'University.photo !=' => ''),
+																'limit' => 6));
+			$this-> set ('uczelnie', $uczelnie);
+
+			//rozrywka
+			$result['entertainment'] = 0;
+			$result['sport'] = 0; 
+			foreach ($kraj['BasketinCountry'] as $entertainment) {
+				if ($entertainment['basket_id'] == 2) { //id wyjścia do kina
+					$result['entertainment'] = $result['entertainment'] + $entertainment['price'];
+				} elseif ($entertainment['basket_id'] == 3) //gym
+					$result['sport'] = $result['sport'] + $entertainment['price'];
 			}
-		}
-		$result['entertainment']= $result['entertainment']*52; //1x w tygodniu
+			if (isset($this->request->query['Enterteinment'])) {
+				$entertain = $this->request->query['Enterteinment'];
+				$result['conditions']['Enterteinment'] = $entertain;
+				switch ($entertain) {
+					case 'hardly':
+						$result['entertainment'] = $result['entertainment']; //tylko raz
+						break;
+					case '1x': 
+						$result['entertainment'] = round($result['entertainment']*52); break;
+					case '2x':
+						$result['entertainment'] = round($result['entertainment']*104); break;
+				}
+			} else {
+				$result['entertainment']= round($result['entertainment']*52); //1x w tygodniu
+			}
+
+			if (isset($this->request->query['Sport'])) {
+				$sport = $this->request->query['Sport'];
+				$result['conditions']['Sport'] = $sport;
+				switch ($sport) {
+					case 'jogging':
+						$result['sport'] = $result['sport']; break;
+						break;
+					case 'gym': 
+						$result['sport'] = round($result['sport']*52); break;
+					case 'no':
+						$result['sport'] = 0; break;
+				}
+			} else {
+				$result['sport']=$result['sport']; 
+			}
+
+
+		//kilka mista do filtra
+			$this->University->City-> contain();
+			$cities = $this-> University-> City-> find ('all', array('conditions' => array('country_id' =>$uczelnia['University']['country_id']),
+																		'order' => array('City.srednia DESC'),
+																		'limit' => 5));
+
+			//kraje do filtra
+			$kraje = $this-> University-> find ('list', array(
+															'fields' => array('University.country_id', 'Country.name'),
+															'group' => array('University.country_id'),
+															'contain' => array('Country')));
+
 		//koszty uczelni
 		//koszty zakupów
 		//koszty życia:
 		//			sport
 
-		$result['sum'] = $result['dinner'] + $result['transport'] + $result['accomodation'] + $result['entertainment'];
+		$result['sum'] = $result['dinner'] + $result['transport'] + $result['accomodation'] + $result['entertainment'] + $result['sport'];
 		$this-> set ('result', $result);
-
-		// uczelnie w mieście - można podać koszt, może?
-		$this->University->contain('UniversitiesParameter');
-		$uczelnie = $this->University->find('all', array('conditions' => array('University.city_id' => $miasto['City']['id'])));
-		$this-> set ('uczelnie', $uczelnie);
+		$this-> set ('cities', $cities);
+		$this-> set ('countries', $kraje);
 	}
 
 	public function srednia() {
@@ -1700,7 +1817,7 @@ class UniversitiesController extends AppController {
                 $this->Session->setFlash('Please provide a user id');
                 $this->redirect(array('action'=>'index'));
             }
-			$this->University->contain('UniversitiesParameter' , 'City.id', 'City.nazwa', 'UniversityType','Promo');
+			$this->University->contain('UniversitiesParameter' , 'City.id', 'City.nazwa', 'UniversityType');
             $university = $this->University->findById($id);
 			$this->set('cities', $this->University->City->find('list'));
 			$this->set('type', $this->University->UniversityType->find('list'));

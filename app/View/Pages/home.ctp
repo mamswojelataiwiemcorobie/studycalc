@@ -48,7 +48,7 @@ App::uses('Debugger', 'Utility');*/
                 Academic excellence and conducting research that addresses real-world problems inform our ethos to this day.</p>
                 <footer>
                   <ul class="actions">
-                    <li><a href="#" class="button icon fa-file-text">Costs</a></li>
+                    <li><a href="universities/university_result/1213/University College London" class="button icon fa-file-text">Costs</a></li>
                   </ul>
                 </footer>
               </section>

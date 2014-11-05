@@ -1,6 +1,6 @@
 <section>
 
-	<h2>MIASTA</h2>
+	<h2>CITIES</h2>
 
 	<?php $cities = $this->requestAction(array(
 
@@ -28,6 +28,6 @@
 
 	</ul>
 
-	<p><a class="button alt" href="/miasta">Zobacz ranking &raquo;</a></p>
+	<p><a class="button alt" href="#">See &raquo;</a></p>
 
 </section><!-- /.col-lg-4 -->

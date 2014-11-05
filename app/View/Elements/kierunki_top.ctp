@@ -1,6 +1,6 @@
 <section>
 
-          <h2>KIERUNKI</h2>
+          <h2>COURSES</h2>
 
 			<?php $courses = $this->requestAction(array(
 															 'controller' => 'courses',
@@ -33,6 +33,6 @@
 
 			</ul>
 
-          <p><a class="btn btn-default" href="/kierunki">Zobacz ranking &raquo;</a></p>
+          <p><a class="button" href="#">With one is the best &raquo;</a></p>
 
 </section><!-- /.col-lg-4 -->

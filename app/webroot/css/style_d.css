@@ -862,3 +862,11 @@
 			border-radius: 5px;
 			margin: 0;
 		}
+
+.wrap {
+	height: 185px;
+	margin: 10px;
+	-webkit-transform-style: preserve-3d;
+	  -moz-transform-style: preserve-3d;
+	  transform-style: preserve-3d;
+}

@@ -205,7 +205,7 @@ class CitiesController extends AppController {
                 $this->Session->setFlash('Please provide a user id');
                 $this->redirect(array('action'=>'index'));
             }
-            $university = $this->City->findById($id);
+            $city = $this->City->findById($id);
 
 			//Debugger::dump($university);
 			
@@ -233,6 +233,7 @@ class CitiesController extends AppController {
 				//unlink($photo['tmp_name']); 
 				
 				///liczymy srednia
+				$this->request->data['City']['srednia'] = $this->City->srednia($city);
 
                 if ($this->City->save($this->request->data)) {
                     $this->Session->setFlash(__('The user has been updated'));
@@ -242,7 +243,7 @@ class CitiesController extends AppController {
                 }
             } 
            
-            $this->request->data = $university;
+            $this->request->data = $city;
     }
 	
 	public function admin_add() {

@@ -32,7 +32,7 @@
 
 		</ul>
 
-          <p><a class="button alt" href="/uczelnie">Zobacz ranking uniwersytetów &raquo;</a></p>
+          <p><a class="button alt" href="#">Take a look &raquo;</a></p>
 
 <!-- /.col-lg-4 -->
 
