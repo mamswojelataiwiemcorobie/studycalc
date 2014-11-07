@@ -94,7 +94,7 @@
 <article class="box post">
 <!-- <a href="#" class="image featured"><img src="/images/16.jpg" alt="" /></a> -->
 	<header>
-		<h2>Please fill the form</h2>
+		<h2>Please fill out the form</h2>
 		<p>Note that not every field is required. In fact the only one is the country.</p>
 	</header>
 	<ol id="progressbar" class="progtrckr" data-progtrckr-steps="5">
@@ -142,6 +142,8 @@
 													'name' => 'country_id',
 
 													'class' => 'form-control',
+
+													'div' => 'input select country',
 
 													'size' => 7, 
 

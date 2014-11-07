@@ -125,7 +125,7 @@
 						 	<li>
 								<input type="checkbox" name="country_id" value="<?php echo $id; ?>">
 								<label for="country_id"><a class="param-toggle <?php if ($result['conditions']['country'] == $country) : echo 'checked'; ?>" href="/
-									<?php else : ?>" href="<?php echo '/country_id='. $id. $params;	endif; ?>">
+									<?php else : ?>" href="<?php echo '/universities/form_result?country_id='. $id. $params;	endif; ?>">
 									<span><?php echo $country; ?></span></a></label>
 							</li>
 						<?php endforeach; ?>

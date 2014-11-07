@@ -78,7 +78,7 @@
 
 										<h1></h1>
 										
-										<a href="/universities/university_result/<?php echo $university['University']['nazwa']; ?>"><?php echo $university['University']['nazwa']; ?></a>
+										<a href="/universities/university_result/<?php echo $university['University']['id']; ?>/<?php echo $university['University']['nazwa']; ?>"><?php echo $university['University']['nazwa']; ?></a>
 
 									</div>
 								</li>

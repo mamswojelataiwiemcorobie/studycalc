@@ -739,259 +739,264 @@ class UniversitiesController extends AppController {
 		$this->set('keywords_for_layout', 'cost, of, study');
 
 		//Debugger::dump($this->request->query);
+		if(isset($this->request->query['country_id'])) {
+			if($this->request->query) {
 
-		if($this->request->query) {
+				$country_id = $this->request->query['country_id'];
+				$this->University->Country->contain('BasketinCountry');
+				$kraj = $this-> University-> Country-> find ('first', array('conditions' => array('id' => $country_id)));
+				$result['conditions']['country'] = $kraj['Country'];
 
-			$country_id = $this->request->query['country_id'];
-			$this->University->Country->contain('BasketinCountry');
-			$kraj = $this-> University-> Country-> find ('first', array('conditions' => array('id' => $country_id)));
-			$result['conditions']['country'] = $kraj['Country'];
+				//kilka mista do filtra
+				$this->University->City-> contain();
+				$cities = $this-> University-> City-> find ('all', array('conditions' => array('country_id' => $country_id),
+																			'order' => array('City.srednia DESC'),
+																			'limit' => 5));
 
-			//kilka mista do filtra
-			$this->University->City-> contain();
-			$cities = $this-> University-> City-> find ('all', array('conditions' => array('country_id' => $country_id),
-																		'order' => array('City.srednia DESC'),
-																		'limit' => 5));
+				//kraje do filtra
+				$kraje = $this-> University-> find ('list', array(
+																'fields' => array('University.country_id', 'Country.name'),
+																'group' => array('University.country_id'),
+																'contain' => array('Country')));
 
-			//kraje do filtra
-			$kraje = $this-> University-> find ('list', array(
-															'fields' => array('University.country_id', 'Country.name'),
-															'group' => array('University.country_id'),
-															'contain' => array('Country')));
+				// uczelnie w mieście
+				$this->University->contain('UniversitiesParameter');
+				$uczelnie = $this->University->find('all', array('conditions' => array('country_id' => $country_id,
+																						'University.photo !=' => ''),
+																	'limit' => 6));
+				$this-> set ('uczelnie', $uczelnie);
 
-			// uczelnie w mieście
-			$this->University->contain('UniversitiesParameter');
-			$uczelnie = $this->University->find('all', array('conditions' => array('country_id' => $country_id,
-																					'University.photo !=' => ''),
-																'limit' => 6));
-			$this-> set ('uczelnie', $uczelnie);
-
-			//rozrywka
-			$result['entertainment'] = 0;
-			$result['sport'] = 0; 
-			foreach ($kraj['BasketinCountry'] as $entertainment) {
-				if ($entertainment['basket_id'] == 2) { //id wyjścia do kina
-					$result['entertainment'] = $result['entertainment'] + $entertainment['price'];
-				} elseif ($entertainment['basket_id'] == 3) //gym
-					$result['sport'] = $result['sport'] + $entertainment['price'];
-			}
-			if (isset($this->request->query['Enterteinment'])) {
-				$entertain = $this->request->query['Enterteinment'];
-				$result['conditions']['Enterteinment'] = $entertain;
-				switch ($entertain) {
-					case 'hardly':
-						$result['entertainment'] = $result['entertainment']; //tylko raz
-						break;
-					case '1x': 
-						$result['entertainment'] = round($result['entertainment']*52); break;
-					case '2x':
-						$result['entertainment'] = round($result['entertainment']*104); break;
-				}
-			} else {
-				$result['entertainment']= round($result['entertainment']*52); //1x w tygodniu
-			}
-
-			if (isset($this->request->query['Sport'])) {
-				$sport = $this->request->query['Sport'];
-				$result['conditions']['Sport'] = $sport;
-				switch ($sport) {
-					case 'jogging':
-						$result['sport'] = $result['sport']; break;
-						break;
-					case 'gym': 
-						$result['sport'] = round($result['sport']*52); break;
-					case 'no':
-						$result['sport'] = 0; break;
-				}
-			} else {
-				$result['sport']=$result['sport']; 
-			}
-
-			//zakupy
-
-			if (!isset($this->request->query['city_id'])) {
-				/*jeżeli nie wybrano miasta to oblicz średnią ze wszystkich w kraju*/
-				$miasta = $this-> University-> City-> find ('all', array('condition' => array('country_id' => $country_id)));
-
-				$obiady = $pokoj = $bilety = $bilety_m = 0;
-				$miasta_a = $miasta_b = $miasta_bm = $miasta_d =0 ; 
-				foreach ($miasta as $miasto) {
-					if (!empty($miasto['City']['obiad'])) {
-						$obiady = $obiady + $miasto['City']['obiad'];
-						++$miasta_d; 
-					}
-					if (!empty($miasto['City']['pokoj'])) {
-						$pokoj = $pokoj + $miasto['City']['pokoj'];
-						++$miasta_a; 
-					}
-					if (!empty($miasto['City']['bilet_m'])) {
-						$bilety_m = $bilety_m + $miasto['City']['bilet_m'];
-						++$miasta_bm; 
-					}
-					if (!empty($miasto['City']['bilet'])) {
-						$bilety = $bilety + $miasto['City']['bilet'];
-						++$miasta_b; 
+				//rozrywka
+				$result['entertainment'] = 0;
+				$result['sport'] = 0; 
+				foreach ($kraj['BasketinCountry'] as $entertainment) {
+					if ($entertainment['basket_id'] == 2) { //id wyjścia do kina
+						$result['entertainment'] = $result['entertainment'] + $entertainment['price'];
+					} elseif ($entertainment['basket_id'] == 3) {//gym 
+						$result['sport'] = $result['sport'] + $entertainment['price'];
 					}
 				}
-				$result['dinner'] = round(($obiady/$miasta_d) * 104); //2x w tygodniu poza domem 
-				$result['accomodation'] = round(($pokoj/$miasta_a) *12);
-
-				if (isset($this->request->query['transport'])) {
-					$transport = $this->request->query['transport'];
-					switch ($transport) {
-						case 'public':
-							$result['transport'] = round(($bilety_m/$miasta_bm) * 12);
-							$result['conditions']['transport'] = 'Public transport';
+				if (isset($this->request->query['Enterteinment'])) {
+					$entertain = $this->request->query['Enterteinment'];
+					$result['conditions']['Enterteinment'] = $entertain;
+					switch ($entertain) {
+						case 'hardly':
+							$result['entertainment'] = $result['entertainment']; //tylko raz
 							break;
-						case 'bike':
-							$result['transport'] = 0;
-							$result['conditions']['transport'] = 'Bike';
-							break;
-						case 'foot':
-							$result['transport'] = round(($bilety/$miasta_b) * 100); //zakładamy że czasem zdarzy nam się pojechać autobusem
-							$result['conditions']['transport'] = 'Foot';
-							break;
-						case 'car':
-							$result['transport'] = 50*12; //ceny benzyny
-							$result['conditions']['transport'] = 'Car';
-							break;
+						case '1x': 
+							$result['entertainment'] = round($result['entertainment']*52); break;
+						case '2x':
+							$result['entertainment'] = round($result['entertainment']*104); break;
 					}
 				} else {
-					$result['transport'] = round(($bilety_m/$miasta_bm) * 12);
-					$result['conditions']['transport'] = 'Public transport';
-				}
-				/*dodawanie kosztów życia w mieście  
-				+ koszt studió*/
-			} else {
-				$city_id = $this->request->query['city_id'];
-
-				$this->University->City->contain();
-				$miasto = $this->University->City->find('first', array('conditions' => array('City.id' => $city_id)));
-
-				foreach ($cities as $key => $city) {
-					if ($city['City']['id'] == $city_id) {
-						$cities[$key]['City']['selected'] = 1;
-					}
+					$result['entertainment']= round($result['entertainment']*52); //1x w tygodniu
 				}
 
-				$result['conditions']['city'] = $miasto['City']['nazwa'];
-				$result['dinner'] = round($miasto['City']['obiad']* 104); //2x w tygodniu poza domem 
-
-				if (isset($this->request->query['transport'])) {
-					$transport = $this->request->query['transport'];
-					switch ($transport) {
-						case 'public':
-							$result['transport'] = $miasto['City']['bilet_m'] * 12;
-							$result['conditions']['transport'] = 'Public transport';
+				if (isset($this->request->query['Sport'])) {
+					$sport = $this->request->query['Sport'];
+					$result['conditions']['Sport'] = $sport;
+					switch ($sport) {
+						case 'jogging':
+							$result['sport'] = $result['sport']; break;
 							break;
-						case 'bike':
-							$result['transport'] = 0;
-							$result['conditions']['transport'] = 'Bike';
-							break;
-						case 'foot':
-							$result['transport'] = $miasto['City']['bilet'] * 100; //zakładamy że czasem zdarzy nam się pojechać autobusem
-							$result['conditions']['transport'] = 'Foot';
-							break;
-						case 'car':
-							$result['transport'] = 50*12; //ceny benzyny
-							$result['conditions']['transport'] = 'Car';
-							break;
+						case 'gym': 
+							$result['sport'] = round($result['sport']*52); break;
+						case 'no':
+							$result['sport'] = 0; break;
 					}
 				} else {
-					$result['transport'] = $miasto['City']['bilet_m'] * 12;
+					$result['sport']=$result['sport']; 
 				}
 
-				if (isset($this->request->query['university_id'])) {
+				//zakupy
 
-					$university_id = $this->request->query['university_id'];
+				if (!isset($this->request->query['city_id'])) {
+					/*jeżeli nie wybrano miasta to oblicz średnią ze wszystkich w kraju*/
+					$miasta = $this-> University-> City-> find ('all', array('condition' => array('country_id' => $country_id)));
 
-					$this->University->contain();
-					$uczelnia = $this->University->find('first', array('conditions' => array('id' => $university_id)));
+					$obiady = $pokoj = $bilety = $bilety_m = 0;
+					$miasta_a = $miasta_b = $miasta_bm = $miasta_d =0 ; 
+					foreach ($miasta as $miasto) {
+						if (!empty($miasto['City']['obiad'])) {
+							$obiady = $obiady + $miasto['City']['obiad'];
+							++$miasta_d; 
+						}
+						if (!empty($miasto['City']['pokoj'])) {
+							$pokoj = $pokoj + $miasto['City']['pokoj'];
+							++$miasta_a; 
+						}
+						if (!empty($miasto['City']['bilet_m'])) {
+							$bilety_m = $bilety_m + $miasto['City']['bilet_m'];
+							++$miasta_bm; 
+						}
+						if (!empty($miasto['City']['bilet'])) {
+							$bilety = $bilety + $miasto['City']['bilet'];
+							++$miasta_b; 
+						}
+					}
+					$result['dinner'] = round(($obiady/$miasta_d) * 104); //2x w tygodniu poza domem 
+					$result['accomodation'] = round(($pokoj/$miasta_a) *12);
 
-					$result['conditions']['university'] = $uczelnia['University']['nazwa'];
-
-					if (isset($this->request->query['Accommodation'])) {
-						$accomodation = $this->request->query['Accommodation'];
-						switch ($accomodation) {
-							case 'dormitory':
-								$result['accomodation'] = $uczelnia['UniversitiesParameter']['akademik']*12;
-								$result['conditions']['accomodation'] = 'Dormitory';
+					if (isset($this->request->query['transport'])) {
+						$transport = $this->request->query['transport'];
+						switch ($transport) {
+							case 'public':
+								$result['transport'] = round(($bilety_m/$miasta_bm) * 12);
+								$result['conditions']['transport'] = 'Public transport';
 								break;
-							case 'shareroom':
-								$result['accomodation'] = $miasto['City']['pokoj_miejsce']*12;
-								$result['conditions']['accomodation'] = 'Shareroom';
+							case 'bike':
+								$result['transport'] = 0;
+								$result['conditions']['transport'] = 'Bike';
 								break;
-
-							default:
-								$result['accomodation'] = $miasto['City']['pokoj']*12;
-								$result['conditions']['accomodation'] = 'Studio';
+							case 'foot':
+								$result['transport'] = round(($bilety/$miasta_b) * 100); //zakładamy że czasem zdarzy nam się pojechać autobusem
+								$result['conditions']['transport'] = 'Foot';
+								break;
+							case 'car':
+								$result['transport'] = 50*12; //ceny benzyny
+								$result['conditions']['transport'] = 'Car';
 								break;
 						}
 					} else {
-						$result['accomodation'] = $miasto['City']['pokoj'] *12;
+						$result['transport'] = round(($bilety_m/$miasta_bm) * 12);
+						$result['conditions']['transport'] = 'Public transport';
 					}
+					/*dodawanie kosztów życia w mieście  
+					+ koszt studió*/
+				} else {
+					$city_id = $this->request->query['city_id'];
 
-					if (isset($this->request->query['course_type_id'])) {
-						if (isset($this->request->query['course_id'])) {
+					$this->University->City->contain();
+					$miasto = $this->University->City->find('first', array('conditions' => array('City.id' => $city_id)));
 
-							$course_id = $this->request->query['course_id'];
-							$this->University->CourseonUniversity->contain('Course');
-							$kurs = $this->University->CourseonUniversity->find('first', array(
-										'fields' => array('CourseonUniversity.cena', 'Course.nazwa'),
-										'condition' => array('course_id' => $course_id, 'university_id' => $university_id)
-										));
-							$result['course_price'] = $kurs['CourseonUniversity']['cena'];
-							$result['conditions']['course'] = $kurs['Course']['nazwa'];
+					foreach ($cities as $key => $city) {
+						if ($city['City']['id'] == $city_id) {
+							$cities[$key]['City']['selected'] = 1;
 						}
 					}
 
-					// uczelnie w mieście
-					$this->University->contain('UniversitiesParameter');
-					$uczelnie = $this->University->find('all', array('conditions' => array('city_id' => $city_id)));
-					$this-> set ('uczelnie', $uczelnie);
+					$result['conditions']['city'] = $miasto['City']['nazwa'];
+					$result['dinner'] = round($miasto['City']['obiad']* 104); //2x w tygodniu poza domem 
 
-					//stypendia do filtrów
-					$this->University->Scholarship->contain('StypendiumType');
-					$scholarships = $this->University->Scholarship->find('all', array('conditions' => array('university_id' => $university_id)));
-					if (isset($this->request->query['scholarship_id'])) {
-						$scholarship_id = $this->request->query['scholarship_id'];
-						$scholarship = $this->University->Scholarship->find('first', array('conditions' => array('scholarship_id' => $scholarship_id)));
-						$result['scholarship'] = $scholarship['Scholarship']['value']*12;
-						foreach ($scholarships as $key => $s) {
-							if ($s['Scholarship']['id'] == $scholarship_id) {
-								$scholarships[$key]['Scholarship']['selected'] = 1;
+					if (isset($this->request->query['transport'])) {
+						$transport = $this->request->query['transport'];
+						switch ($transport) {
+							case 'public':
+								$result['transport'] = $miasto['City']['bilet_m'] * 12;
+								$result['conditions']['transport'] = 'Public transport';
+								break;
+							case 'bike':
+								$result['transport'] = 0;
+								$result['conditions']['transport'] = 'Bike';
+								break;
+							case 'foot':
+								$result['transport'] = $miasto['City']['bilet'] * 100; //zakładamy że czasem zdarzy nam się pojechać autobusem
+								$result['conditions']['transport'] = 'Foot';
+								break;
+							case 'car':
+								$result['transport'] = 50*12; //ceny benzyny
+								$result['conditions']['transport'] = 'Car';
+								break;
+						}
+					} else {
+						$result['transport'] = $miasto['City']['bilet_m'] * 12;
+					}
+
+					if (isset($this->request->query['university_id'])) {
+
+						$university_id = $this->request->query['university_id'];
+
+						$this->University->contain('UniversitiesParameter');
+						$uczelnia = $this->University->find('first', array('conditions' => array('University.id' => $university_id)));
+
+						$result['conditions']['university'] = $uczelnia['University']['nazwa'];
+
+						if (isset($this->request->query['Accommodation'])) {
+							$accomodation = $this->request->query['Accommodation'];
+							switch ($accomodation) {
+								case 'dormitory':
+									$result['accomodation'] = $uczelnia['UniversitiesParameter']['akademik']*12;
+									$result['conditions']['accomodation'] = 'Dormitory';
+									break;
+								case 'shareroom':
+									$result['accomodation'] = $miasto['City']['pokoj_miejsce']*12;
+									$result['conditions']['accomodation'] = 'Shareroom';
+									break;
+
+								default:
+									$result['accomodation'] = $miasto['City']['pokoj']*12;
+									$result['conditions']['accomodation'] = 'Studio';
+									break;
+							}
+						} else {
+							$result['accomodation'] = $miasto['City']['pokoj'] *12;
+						}
+
+						if (isset($this->request->query['course_type_id'])) {
+							if (isset($this->request->query['course_id'])) {
+
+								$course_id = $this->request->query['course_id'];
+								$this->University->CourseonUniversity->contain('Course');
+								$kurs = $this->University->CourseonUniversity->find('first', array(
+											'fields' => array('CourseonUniversity.cena', 'Course.nazwa'),
+											'condition' => array('course_id' => $course_id, 'university_id' => $university_id)
+											));
+								$result['course_price'] = $kurs['CourseonUniversity']['cena'];
+								$result['conditions']['course'] = $kurs['Course']['nazwa'];
 							}
 						}
-					}
-					$this-> set ('scholarships', $scholarships);
-					//Debugger::dump($scholarships);
 
+						// uczelnie w mieście
+						$this->University->contain('UniversitiesParameter');
+						$uczelnie = $this->University->find('all', array('conditions' => array('city_id' => $city_id)));
+						$this-> set ('uczelnie', $uczelnie);
 
-				} else {
-					if (isset($this->request->query['Accomodation'])) {
-						$accomodation = $this->request->query['Accomodation'];
-						if ($accomodation == 'dormitory' || $accomodation == 'shareroom') {
-							$result['accomodation'] = $miasto['City']['pokoj_miejsce']*12;
-						} else {
-							$result['accomodation'] = $miasto['City']['pokoj']*12;
+						//stypendia do filtrów
+						$this->University->Scholarship->contain('StypendiumType');
+						$scholarships = $this->University->Scholarship->find('all', array('conditions' => array('university_id' => $university_id)));
+						if (isset($this->request->query['scholarship_id'])) {
+							$scholarship_id = $this->request->query['scholarship_id'];
+							$scholarship = $this->University->Scholarship->find('first', array('conditions' => array('scholarship_id' => $scholarship_id)));
+							$result['scholarship'] = $scholarship['Scholarship']['value']*12;
+							foreach ($scholarships as $key => $s) {
+								if ($s['Scholarship']['id'] == $scholarship_id) {
+									$scholarships[$key]['Scholarship']['selected'] = 1;
+								}
+							}
 						}
-					} else {
-						$result['accomodation'] = $miasto['City']['pokoj'] * 12;
-					}
-				}
+						$this-> set ('scholarships', $scholarships);
+						//Debugger::dump($scholarships);
 
-			}
-			$result['sum'] = $result['dinner'] + $result['transport'] + $result['accomodation'] + $result['entertainment'] + $result['sport'];
-			if (isset($result['course_price'])) {
-				$result['sum'] = $result['sum'] + $result['course_price'];
-			}
-			if (isset($result['scholarship'])) {
-				$result['sum'] = $result['sum'] - $result['scholarship'];
-			}
-			$this-> set ('result', $result);
-			$this-> set ('cities', $cities);
-			$this-> set ('countries', $kraje);
-		} 
+
+					} else {
+						if (isset($this->request->query['Accomodation'])) {
+							$accomodation = $this->request->query['Accomodation'];
+							if ($accomodation == 'dormitory' || $accomodation == 'shareroom') {
+								$result['accomodation'] = $miasto['City']['pokoj_miejsce']*12;
+							} else {
+								$result['accomodation'] = $miasto['City']['pokoj']*12;
+							}
+						} else {
+							$result['accomodation'] = $miasto['City']['pokoj'] * 12;
+						}
+					}
+
+				}
+				$result['sum'] = $result['dinner'] + $result['transport'] + $result['accomodation'] + $result['entertainment'] + $result['sport'];
+				if (isset($result['course_price'])) {
+					$result['sum'] = $result['sum'] + $result['course_price'];
+				}
+				if (isset($result['scholarship'])) {
+					$result['sum'] = $result['sum'] - $result['scholarship'];
+				}
+				$this-> set ('result', $result);
+				$this-> set ('cities', $cities);
+				$this-> set ('countries', $kraje);
+			} 
+		} else { $this-> redirect(array(
+						    'controller' => 'universities',
+						    'action' => 'form'));
+		}
 	}
 
 	public function city_result($name) {

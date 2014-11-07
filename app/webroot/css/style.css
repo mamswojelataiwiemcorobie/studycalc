@@ -862,6 +862,12 @@ input,button,select,textarea {
 }
 .btn,.alert,.progress,.form-control,.breadcrumb,.well {
 	border-radius:0;
+	border-top-left-radius: 4px;
+border-top-right-radius: 4px;
+	padding: 0; 
+}
+option {
+	padding: 0 10px 0 7px;;
 }
 .alert {
 	font-size:14px;
@@ -10058,6 +10064,14 @@ margin: auto;
 	margin-bottom: 1em;
 }
 
+.country select {
+	border-color: #d52349;
+}
+
+.country label {
+	color: #d52349;
+}
+
 /**fomr Results**/
 .recipe li span {
 	float: right;
@@ -10099,4 +10113,9 @@ line-height: 1.15em;
 	height: 16px;
 	margin-top: 2px;
 	background: url(/img/check.png) no-repeat 0 0;
+}
+
+/*** Basket ***/
+.food {
+	
 }
