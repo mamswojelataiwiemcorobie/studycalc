@@ -10,4 +10,11 @@ class BasketsController extends AppController {
         Debugger:: dump($basket);
         $this->set('basket', $basket);
     }
+
+    public function basketincountry($country) {
+    	 $basket = $this-> Basket-> BasketinCountry-> find('all', array('conditions' => array('BasketinCountry.country_id'=> $country),
+    	 																'order'=> array('Basket.basket_type_id')));
+        Debugger:: dump($basket);
+        $this->set('basket', $basket);
+    }
 }
